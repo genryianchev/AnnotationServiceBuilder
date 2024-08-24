@@ -46,16 +46,74 @@ AnnationServiceBilder is an ASP.NET Core library that simplifies dependency inje
    - `SingletonServiceAttribute`: Register a service with a singleton lifetime.
    - `ScopedServiceAttribute`: Register a service with a scoped lifetime.
    - `TransientServiceAttribute`: Register a service with a transient lifetime.
+   - `RefitClientAttribute`: Register an interface as a Refit client.
 
-   Annotate your service classes accordingly:
+   Annotate your classes and interfaces accordingly:
+
+   #### SingletonServiceAttribute Example
 
    ```csharp
+   using AnnationServiceBilder.Annotations;
+
+   [SingletonService]
+   public class MySingletonService
+   {
+       // Implementation for a singleton service...
+   }
+   ```
+
+   This class will be registered with a singleton lifetime, meaning only one instance of `MySingletonService` will be created and shared throughout the application's lifetime.
+
+   #### ScopedServiceAttribute Example
+
+   ```csharp
+   using AnnationServiceBilder.Annotations;
+
    [ScopedService(typeof(IPostsRepository))]
    public class PostsRepository : IPostsRepository
    {
-       // Implementation...
+       // Implementation for a scoped service...
    }
    ```
+
+   This service will be registered with a scoped lifetime, meaning an instance of `PostsRepository` will be created once per request.
+
+   #### TransientServiceAttribute Example
+
+   ```csharp
+   using AnnationServiceBilder.Annotations;
+
+   [TransientService]
+   public class MyTransientService
+   {
+       // Implementation for a transient service...
+   }
+   ```
+
+   This service will be registered with a transient lifetime, meaning a new instance of `MyTransientService` will be created every time it is requested.
+
+   #### RefitClientAttribute Example
+
+   ```csharp
+   using AnnationServiceBilder.Annotations.Refit;
+   using AnnationServiceBilder.Data.Models;
+   using Refit;
+
+   namespace AnnationServiceBilder.Network.Repositories
+   {
+       [RefitClient]
+       public interface IPostsApi
+       {
+           [Get("/posts")]
+           Task<List<Post>> GetPostsAsync();
+
+           [Get("/posts/{id}")]
+           Task<Post> GetPostByIdAsync(int id);
+       }
+   }
+   ```
+
+   This interface will be automatically registered as a Refit client, enabling you to make HTTP requests without manually configuring the client.
 
 2. **Register Services Automatically**:
 
@@ -66,9 +124,10 @@ AnnationServiceBilder is an ASP.NET Core library that simplifies dependency inje
    services.AddAnnotatedSingletonServices(assembly);
    services.AddAnnotatedScopedServices(assembly);
    services.AddAnnotatedTransientServices(assembly);
+   services.AddRefitClientsFromAttributes(assembly, "https://api.yourservice.com"); // Replace with your API base URL
    ```
 
-   This will automatically register all services annotated with the custom attributes.
+   This will automatically register all services and Refit clients annotated with the custom attributes.
 
 ## Usage
 
@@ -91,6 +150,25 @@ public class MyService
 }
 ```
 
+For Refit clients, you can directly inject the interface and use it as follows:
+
+```csharp
+public class PostService
+{
+    private readonly IPostsApi _postsApi;
+
+    public PostService(IPostsApi postsApi)
+    {
+        _postsApi = postsApi;
+    }
+
+    public async Task<List<Post>> FetchPostsAsync()
+    {
+        return await _postsApi.GetPostsAsync();
+    }
+}
+```
+
 ## Contributing
 
 We welcome contributions! Please submit a pull request or open an issue to discuss your ideas or report bugs.
@@ -98,3 +176,4 @@ We welcome contributions! Please submit a pull request or open an issue to discu
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
