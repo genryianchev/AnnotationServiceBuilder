@@ -35,138 +35,278 @@ AnnationServiceBilder is an ASP.NET Core library that simplifies dependency inje
 
 3. Restore the necessary packages by building the solution.
 
-## Configuration
+## Setting up Annotations
 
-### Setting up Annotations
+The `Annotations` folder in your project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used:
 
-1. **Create and Apply Annotations**:
+### 1. **Scoped Annotations**
 
-   The project already includes the necessary annotations for service registration. They are located in the `Annotations` folder:
+**Files:**
+- `ScopedServiceAttribute.cs` (path: `Annotations/Scoped/ScopedServiceAttribute.cs`)
+- `ScopedGenericServiceAttribute.cs` (path: `Annotations/Scoped/ScopedGenericServiceAttribute.cs`)
 
-   - `SingletonServiceAttribute`: Register a service with a singleton lifetime.
-   - `ScopedServiceAttribute`: Register a service with a scoped lifetime.
-   - `TransientServiceAttribute`: Register a service with a transient lifetime.
-   - `RefitClientAttribute`: Register an interface as a Refit client.
+**Description:**
+- **ScopedServiceAttribute:** This attribute is used to mark classes that should be registered with a *scoped* lifetime in the DI container. Optionally, you can specify the service type with which the class will be registered.
 
-   Annotate your classes and interfaces accordingly:
-
-   #### SingletonServiceAttribute Example
-
-   ```csharp
-   using AnnationServiceBilder.Annotations;
-
-   [SingletonService]
-   public class MySingletonService
-   {
-       // Implementation for a singleton service...
-   }
-   ```
-
-   This class will be registered with a singleton lifetime, meaning only one instance of `MySingletonService` will be created and shared throughout the application's lifetime.
-
-   #### ScopedServiceAttribute Example
-
-   ```csharp
-   using AnnationServiceBilder.Annotations;
-
-   [ScopedService(typeof(IPostsRepository))]
-   public class PostsRepository : IPostsRepository
-   {
-       // Implementation for a scoped service...
-   }
-   ```
-
-   This service will be registered with a scoped lifetime, meaning an instance of `PostsRepository` will be created once per request.
-
-   #### TransientServiceAttribute Example
-
-   ```csharp
-   using AnnationServiceBilder.Annotations;
-
-   [TransientService]
-   public class MyTransientService
-   {
-       // Implementation for a transient service...
-   }
-   ```
-
-   This service will be registered with a transient lifetime, meaning a new instance of `MyTransientService` will be created every time it is requested.
-
-   #### RefitClientAttribute Example
-
-   ```csharp
-   using AnnationServiceBilder.Annotations.Refit;
-   using AnnationServiceBilder.Data.Models;
-   using Refit;
-
-   namespace AnnationServiceBilder.Network.Repositories
-   {
-       [RefitClient]
-       public interface IPostsApi
-       {
-           [Get("/posts")]
-           Task<List<Post>> GetPostsAsync();
-
-           [Get("/posts/{id}")]
-           Task<Post> GetPostByIdAsync(int id);
-       }
-   }
-   ```
-
-   This interface will be automatically registered as a Refit client, enabling you to make HTTP requests without manually configuring the client.
-
-2. **Register Services Automatically**:
-
-   In your `Startup.cs` or `Program.cs`, ensure that the services are registered by adding the following lines:
-
-   ```csharp
-   var assembly = Assembly.GetExecutingAssembly();
-   services.AddAnnotatedSingletonServices(assembly);
-   services.AddAnnotatedScopedServices(assembly);
-   services.AddAnnotatedTransientServices(assembly);
-   services.AddRefitClientsFromAttributes(assembly, "https://api.yourservice.com"); // Replace with your API base URL
-   ```
-
-   This will automatically register all services and Refit clients annotated with the custom attributes.
-
-## Usage
-
-Once your services are annotated and registered, you can use them anywhere in your application by injecting them into constructors:
+**Example Code:**
 
 ```csharp
-public class MyService
+namespace AnnationServiceBilder.Annotations.Scoped
 {
-    private readonly IPostsRepository _postsRepository;
-
-    public MyService(IPostsRepository postsRepository)
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    public sealed class ScopedServiceAttribute : Attribute
     {
-        _postsRepository = postsRepository;
-    }
+        public Type ServiceType { get; }
 
-    public async Task<List<Post>> GetPostsAsync()
-    {
-        return await _postsRepository.GetPostsAsync();
+        public ScopedServiceAttribute(Type serviceType = null)
+        {
+            ServiceType = serviceType;
+        }
     }
 }
 ```
 
-For Refit clients, you can directly inject the interface and use it as follows:
+- **ScopedGenericServiceAttribute:** This attribute is used to register generic classes with a *scoped* lifetime.
+
+**Example Code:**
 
 ```csharp
-public class PostService
+namespace AnnationServiceBilder.Annotations.Scoped
 {
-    private readonly IPostsApi _postsApi;
-
-    public PostService(IPostsApi postsApi)
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    public sealed class ScopedGenericServiceAttribute : Attribute
     {
-        _postsApi = postsApi;
-    }
+        public Type ServiceType { get; }
 
-    public async Task<List<Post>> FetchPostsAsync()
-    {
-        return await _postsApi.GetPostsAsync();
+        public ScopedGenericServiceAttribute(Type serviceType)
+        {
+            ServiceType = serviceType;
+        }
     }
 }
+```
+
+### 2. **Singleton Annotations**
+
+**File:**
+- `SingletonServiceAttribute.cs` (path: `Annotations/Singleton/SingletonServiceAttribute.cs`)
+
+**Description:**
+- **SingletonServiceAttribute:** This attribute is used to mark classes that should be registered with a *singleton* lifetime in the DI container.
+
+**Example Code:**
+
+```csharp
+namespace AnnationServiceBilder.Annotations.Singleton
+{
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    public sealed class SingletonServiceAttribute : Attribute
+    {
+    }
+}
+```
+
+### 3. **Transient Annotations**
+
+**File:**
+- `TransientServiceAttribute.cs` (path: `Annotations/Transient Services/Transient Services.cs`)
+
+**Description:**
+- **TransientServiceAttribute:** This attribute is used to mark classes that should be registered with a *transient* lifetime in the DI container.
+
+**Example Code:**
+
+```csharp
+namespace AnnationServiceBilder.Data.Transient_Services
+{
+    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    public sealed class TransientServiceAttribute : Attribute
+    {
+    }
+}
+```
+
+### 4. **Refit Annotations**
+
+**File:**
+- `RefitClientAttribute.cs` (path: `Annotations/Refit/RefitClient.cs`)
+
+**Description:**
+- **RefitClientAttribute:** This attribute is used to mark interfaces that should be registered as Refit clients, enabling easy integration with HTTP APIs.
+
+**Example Code:**
+
+```csharp
+namespace AnnationServiceBilder.Annotations.Refit
+{
+    [AttributeUsage(AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
+    public sealed class RefitClientAttribute : Attribute
+    {
+        public string BaseUrl { get; }
+
+        public RefitClientAttribute(string baseUrl = null)
+        {
+            BaseUrl = baseUrl;
+        }
+    }
+}
+```
+
+### 5. **Service Registration Extensions**
+
+**File:**
+- `ServiceCollectionExtensions.cs` (path: `Annotations/ServiceCollectionExtensions.cs`)
+
+**Description:**
+- This file contains extension methods for `IServiceCollection` that automatically register all annotated services in the DI container.
+
+**Example Code:**
+
+```csharp
+using AnnationServiceBilder.Annotations.Refit;
+using AnnationServiceBilder.Annotations.Scoped;
+using AnnationServiceBilder.Annotations.Singleton;
+using AnnationServiceBilder.Data.Transient_Services;
+using Refit;
+using System.Reflection;
+
+namespace AnnationServiceBilder.Annotations
+{
+    public static class ServiceCollectionExtensions
+    {
+        public static void AddRefitClientsFromAttributes(this IServiceCollection services, Assembly assembly, string defaultBaseUrl)
+        {
+            var refitClientTypes = assembly.GetTypes()
+                .Where(t => t.IsInterface && t.GetCustomAttribute<RefitClientAttribute>() != null);
+
+            foreach (var interfaceType in refitClientTypes)
+            {
+                var attribute = interfaceType.GetCustomAttribute<RefitClientAttribute>();
+                var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
+
+                services.AddRefitClient(interfaceType)
+                        .ConfigureHttpClient(c => c.BaseAddress = baseUrl);
+            }
+        }
+
+        public static void AddAnnotatedSingletonServices(this IServiceCollection services, Assembly assembly)
+        {
+            var singletonTypes = assembly.GetTypes()
+                .Where(t => t.GetCustomAttribute<SingletonServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+
+            foreach (var type in singletonTypes)
+            {
+                services.AddSingleton(type);
+            }
+        }
+
+        public static void AddAnnotatedTransientServices(this IServiceCollection services, Assembly assembly)
+        {
+            var transientTypes = assembly.GetTypes()
+                .Where(t => t.GetCustomAttribute<TransientServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+
+            foreach (var type in transientTypes)
+            {
+                services.AddTransient(type);
+            }
+        }
+
+        public static void AddAnnotatedScopedServices(this IServiceCollection services, Assembly assembly)
+        {
+            var scopedTypes = assembly.GetTypes()
+                .Where(t => t.GetCustomAttribute<ScopedServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+
+            foreach (var type in scopedTypes)
+            {
+                var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
+                var serviceType = attribute.ServiceType ?? type;
+                services.AddScoped(serviceType, type);
+            }
+
+            var genericScopedTypes = assembly.GetTypes()
+                .Where(t => t.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+
+            foreach (var type in genericScopedTypes)
+            {
+                var attribute = type.GetCustomAttribute<ScopedGenericServiceAttribute>();
+                services.AddScoped(attribute.ServiceType, type);
+            }
+        }
+    }
+}
+```
+
+## Usage
+
+Here are examples of how to use each annotation in your project:
+
+### **1. Using Scoped Services**
+
+```csharp
+using AnnationServiceBilder.Annotations.Scoped;
+
+[ScopedService(typeof(IMyScopedService))]
+public class MyScopedService : IMyScopedService
+{
+    // Implementation...
+}
+```
+
+### **2. Using Singleton Services**
+
+```csharp
+using AnnationServiceBilder.Annotations.Singleton;
+
+[SingletonService]
+public class MySingletonService
+{
+    // Implementation...
+}
+```
+
+### **3. Using Transient Services**
+
+```csharp
+using AnnationServiceBilder.Annotations.Transient_Services;
+
+[TransientService]
+public class MyTransientService
+{
+    // Implementation...
+}
+```
+
+### **4. Using Refit Clients**
+
+```csharp
+using AnnationServiceBilder.Annotations.Refit;
+using AnnationServiceBilder.Data.Models;
+using Refit;
+
+namespace AnnationServiceBilder.Network.Repositories
+{
+    [RefitClient]
+    public interface IPostsApi
+    {
+        [Get("/posts")]
+        Task<List<Post>> GetPostsAsync();
+
+        [Get("/posts/{id}")]
+        Task<Post> GetPostByIdAsync(int id);
+    }
+}
+```
+
+### **5. Registering Services**
+
+In your `Startup.cs` or `Program.cs`, you should register the services as follows:
+
+```csharp
+var assembly = Assembly.GetExecutingAssembly();
+services.AddAnnotatedSingletonServices(assembly);
+services.AddAnnotatedScopedServices(assembly);
+services.AddAnnotatedTransientServices(assembly);
+services.AddRefitClientsFromAttributes(assembly, "https://api.yourservice.com"); // Replace with your API base URL
 ```
 
 ## Contributing
@@ -175,5 +315,7 @@ We welcome contributions! Please submit a pull request or open an issue to discu
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under
+
+ the MIT License - see the [LICENSE](LICENSE) file for details.
 
