@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "dgSpecHash": "I/kG57XvFz513xMR/psVNUQIBZG1k6Tn8PAJQyHyUnh3G6eQAMrh/5Xu9WmXgznXxf54e1a920d4DoiJfFU4ng==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Gena\\source\\repos\\AnnationServiceBilder\\AnnationServiceBilder\\AnnationServiceBilder.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Gena\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\8.0.0\\microsoft.extensions.configuration.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\microsoft.extensions.http\\8.0.0\\microsoft.extensions.http.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\microsoft.extensions.logging\\8.0.0\\microsoft.extensions.logging.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\microsoft.extensions.options\\8.0.0\\microsoft.extensions.options.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\refit\\7.1.2\\refit.7.1.2.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\refit.httpclientfactory\\7.1.2\\refit.httpclientfactory.7.1.2.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\refit.newtonsoft.json\\7.1.2\\refit.newtonsoft.json.7.1.2.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\system.net.http.json\\8.0.0\\system.net.http.json.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
+    "C:\\Users\\Gena\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
