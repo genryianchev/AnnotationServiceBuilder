@@ -68,7 +68,7 @@ By centralizing and automating service registration, the chances of missing a se
 
 The `Annotations` folder in your project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used:
 
-### 1. **Scoped Annotations**
+### Step 1: Add Scoped Annotations
 
 **Files:**
 - `ScopedServiceAttribute.cs` (path: `Annotations/Scoped/ScopedServiceAttribute.cs`)
@@ -115,7 +115,7 @@ namespace AnnationServiceBilder.Annotations.Scoped
 }
 ```
 
-### 2. **Singleton Annotations**
+### Step 2: Add Singleton Annotation
 
 **File:**
 - `SingletonServiceAttribute.cs` (path: `Annotations/Singleton/SingletonServiceAttribute.cs`)
@@ -135,7 +135,7 @@ namespace AnnationServiceBilder.Annotations.Singleton
 }
 ```
 
-### 3. **Transient Annotations**
+### Step 3: Add Transient Annotation
 
 **File:**
 - `TransientServiceAttribute.cs` (path: `Annotations/Transient Services/Transient Services.cs`)
@@ -155,7 +155,7 @@ namespace AnnationServiceBilder.Data.Transient_Services
 }
 ```
 
-### 4. **Refit Annotations**
+### Step 4: Add Refit Client Annotation
 
 **File:**
 - `RefitClientAttribute.cs` (path: `Annotations/Refit/RefitClient.cs`)
@@ -181,7 +181,7 @@ namespace AnnationServiceBilder.Annotations.Refit
 }
 ```
 
-### 5. **Service Registration Extensions**
+### Step 5: Add Service Registration Extensions
 
 **File:**
 - `ServiceCollectionExtensions.cs` (path: `Annotations/ServiceCollectionExtensions.cs`)
@@ -248,14 +248,14 @@ namespace AnnationServiceBilder.Annotations
             foreach (var type in scopedTypes)
             {
                 var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
-               
-
- var serviceType = attribute.ServiceType ?? type;
+                var serviceType = attribute.ServiceType ?? type;
                 services.AddScoped(serviceType, type);
             }
 
             var genericScopedTypes = assembly.GetTypes()
-                .Where(t => t.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+                .Where(t => t.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && t.IsClass &&
+
+ !t.IsAbstract);
 
             foreach (var type in genericScopedTypes)
             {
@@ -267,7 +267,7 @@ namespace AnnationServiceBilder.Annotations
 }
 ```
 
-### 6. **Registering Services in `Startup.cs` or `Program.cs`**
+### Step 6: Register Services in `Startup.cs` or `Program.cs`
 
 After setting up the annotations and the service registration extensions, you can register the services in your `Startup.cs` or `Program.cs` file using the following code:
 
