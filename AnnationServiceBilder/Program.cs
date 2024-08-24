@@ -19,10 +19,6 @@ builder.Services.AddAnnotatedScopedServices(assembly);
 
 ////////////////////////////////////////////////// AnnationServiceBilder ////////////////////////////////////
 
-//builder.Services.AddScoped<IPostsRepository, PostsRepository>();
-//builder.Services.AddScoped<IPostsService, PostsService>();
-//builder.Services.AddRefitClient<IPostsApi>()
-//                .ConfigureHttpClient(c => c.BaseAddress = new Uri(defaultBaseUrl));
 
 var app = builder.Build();
 
