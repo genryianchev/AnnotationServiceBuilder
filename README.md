@@ -64,19 +64,6 @@ By centralizing and automating service registration, the chances of missing a se
 
 - Ensure that your .NET SDK is up-to-date. This project requires .NET 6.0 or later.
 
-## Installation
-
-1. Clone the repository to your local machine:
-
-   ```bash
-   git clone https://github.com/yourusername/AnnationServiceBilder.git
-   cd AnnationServiceBilder
-   ```
-
-2. Open the project in Visual Studio or your preferred IDE.
-
-3. Restore the necessary packages by building the solution.
-
 ## Setting up Annotations
 
 The `Annotations` folder in your project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used:
