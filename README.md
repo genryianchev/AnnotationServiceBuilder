@@ -236,6 +236,18 @@ namespace AnnationServiceBilder.Annotations
 }
 ```
 
+### 6. **Registering Services in `Startup.cs` or `Program.cs`**
+
+After setting up the annotations and the service registration extensions, you can register the services in your `Startup.cs` or `Program.cs` file using the following code:
+
+```csharp
+var assembly = Assembly.GetExecutingAssembly();
+services.AddAnnotatedSingletonServices(assembly);
+services.AddAnnotatedScopedServices(assembly);
+services.AddAnnotatedTransientServices(assembly);
+services.AddRefitClientsFromAttributes(assembly, "https://api.yourservice.com"); // Replace with your API base URL
+```
+
 ## Usage
 
 Here are examples of how to use each annotation in your project:
@@ -297,25 +309,12 @@ namespace AnnationServiceBilder.Network.Repositories
 }
 ```
 
-### **5. Registering Services**
-
-In your `Startup.cs` or `Program.cs`, you should register the services as follows:
-
-```csharp
-var assembly = Assembly.GetExecutingAssembly();
-services.AddAnnotatedSingletonServices(assembly);
-services.AddAnnotatedScopedServices(assembly);
-services.AddAnnotatedTransientServices(assembly);
-services.AddRefitClientsFromAttributes(assembly, "https://api.yourservice.com"); // Replace with your API base URL
-```
-
 ## Contributing
 
-We welcome contributions! Please submit a pull request or open an issue to discuss your ideas or report bugs.
+We
+
+ welcome contributions! Please submit a pull request or open an issue to discuss your ideas or report bugs.
 
 ## License
 
-This project is licensed under
-
- the MIT License - see the [LICENSE](LICENSE) file for details.
-
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
