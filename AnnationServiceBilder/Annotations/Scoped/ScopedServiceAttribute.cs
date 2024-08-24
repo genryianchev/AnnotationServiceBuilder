@@ -1,4 +1,5 @@
-﻿namespace AnnationServiceBilder.Annotations.Scoped
+﻿using System;
+namespace AnnationServiceBilder.Annotations.Scoped
 {
     /// <summary>
     /// Specifies that a class should be registered with a scoped lifetime in the dependency injection container.

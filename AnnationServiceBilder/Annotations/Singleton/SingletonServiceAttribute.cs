@@ -1,4 +1,6 @@
-﻿namespace AnnationServiceBilder.Annotations.Singleton
+﻿using System;
+
+namespace AnnationServiceBilder.Annotations.Singleton
 {
     /// <summary>
     /// Specifies that a class should be registered with a singleton lifetime in the dependency injection container.

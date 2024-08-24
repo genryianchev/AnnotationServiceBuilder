@@ -1,4 +1,6 @@
-﻿namespace AnnationServiceBilder.Data.Transient_Services
+﻿using System;
+
+namespace AnnationServiceBilder.Data.Transient_Services
 {
     /// <summary>
     /// Specifies that a class should be registered with a transient lifetime in the dependency injection container.

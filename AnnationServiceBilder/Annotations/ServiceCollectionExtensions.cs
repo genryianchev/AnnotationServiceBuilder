@@ -2,7 +2,10 @@
 using AnnationServiceBilder.Annotations.Scoped;
 using AnnationServiceBilder.Annotations.Singleton;
 using AnnationServiceBilder.Data.Transient_Services;
+using Microsoft.Extensions.DependencyInjection;
 using Refit;
+using System;
+using System.Linq;
 using System.Reflection;
 
 namespace AnnationServiceBilder.Annotations

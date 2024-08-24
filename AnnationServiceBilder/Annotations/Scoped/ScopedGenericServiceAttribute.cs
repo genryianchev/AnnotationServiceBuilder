@@ -1,4 +1,6 @@
-﻿namespace AnnationServiceBilder.Annotations.Scoped
+﻿using System;
+
+namespace AnnationServiceBilder.Annotations.Scoped
 {
     /// <summary>
     /// Specifies that a generic class should be registered with a scoped lifetime in the dependency injection container.

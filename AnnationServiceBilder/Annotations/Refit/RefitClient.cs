@@ -1,4 +1,6 @@
-﻿namespace AnnationServiceBilder.Annotations.Refit
+﻿using System;
+
+namespace AnnationServiceBilder.Annotations.Refit
 {
     /// <summary>
     /// Specifies that the interface is a Refit client.

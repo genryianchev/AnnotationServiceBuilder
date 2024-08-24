@@ -1,9 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
+<PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageId>AnnationServiceBilder</PackageId> <!-- Уникальный идентификатор вашего пакета -->
+    <Version>1.0.0</Version> <!-- Версия вашего пакета -->
+    <Authors>AnnationServiceBilder</Authors> <!-- Ваше имя или название компании -->
+    <Company>AnnationServiceBilder</Company> <!-- Название компании -->
+    <Product>AnnationServiceBilder</Product> <!-- Название продукта -->
+    <Description>This package simplifies DI with custom annotations.</Description> <!-- Описание пакета -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression> <!-- Лицензия, например, MIT -->
+    <PackageProjectUrl>https://github.com/yourusername/AnnationServiceBilder</PackageProjectUrl> <!-- URL проекта -->
+    <RepositoryUrl>https://github.com/yourusername/AnnationServiceBilder</RepositoryUrl> <!-- URL репозитория -->
   </PropertyGroup>
 
   <ItemGroup>
