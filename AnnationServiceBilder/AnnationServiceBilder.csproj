@@ -3,14 +3,15 @@
 <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PackageId>AnnationServiceBilder</PackageId> <!-- Уникальный идентификатор вашего пакета -->
-    <Version>1.0.0</Version> <!-- Версия вашего пакета -->
+    <Version>1.0.4</Version> <!-- Версия вашего пакета -->
     <Authors>AnnationServiceBilder</Authors> <!-- Ваше имя или название компании -->
     <Company>AnnationServiceBilder</Company> <!-- Название компании -->
     <Product>AnnationServiceBilder</Product> <!-- Название продукта -->
-    <Description>This package simplifies DI with custom annotations.</Description> <!-- Описание пакета -->
     <PackageLicenseExpression>MIT</PackageLicenseExpression> <!-- Лицензия, например, MIT -->
-    <PackageProjectUrl>https://github.com/yourusername/AnnationServiceBilder</PackageProjectUrl> <!-- URL проекта -->
-    <RepositoryUrl>https://github.com/yourusername/AnnationServiceBilder</RepositoryUrl> <!-- URL репозитория -->
+    <PackageProjectUrl>https://github.com/genryianchev/AnnationServiceBilder</PackageProjectUrl> <!-- URL проекта -->
+    <RepositoryUrl>https://github.com/genryianchev/AnnationServiceBilder</RepositoryUrl> <!-- URL репозитория -->
+    <Description>A library that simplifies dependency injection using custom annotations.</Description>
+    <PackageTags>dependency injection, DI, annotations, .NET, ASP.NET Core, NuGet</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

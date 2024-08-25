@@ -19,7 +19,6 @@ builder.Services.AddRefitClientsFromAttributes(assembly, defaultBaseUrl);
 builder.Services.AddAnnotatedSingletonServices(assembly);
 builder.Services.AddAnnotatedScopedServices(assembly);
 
-
 ////////////////////////////////////////////////// AnnationServiceBilder ////////////////////////////////////
 
 
