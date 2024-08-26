@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+<PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>AnnotationServiceBuilder</PackageId> <!-- Уникальный идентификатор вашего пакета -->
+    <Version>1.0.4</Version> <!-- Версия вашего пакета -->
+    <Authors>AnnotationServiceBuilder</Authors> <!-- Ваше имя или название компании -->
+    <Company>AnnotationServiceBuilder</Company> <!-- Название компании -->
+    <Product>AnnotationServiceBuilder</Product> <!-- Название продукта -->
+    <PackageLicenseExpression>MIT</PackageLicenseExpression> <!-- Лицензия, например, MIT -->
+    <PackageProjectUrl>https://github.com/genryianchev/AnnotationServiceBuilder</PackageProjectUrl> <!-- URL проекта -->
+    <RepositoryUrl>https://github.com/genryianchev/AnnotationServiceBuilder</RepositoryUrl> <!-- URL репозитория -->
+    <Description>A library that simplifies dependency injection using custom annotations.</Description>
+    <PackageTags>dependency injection, DI, annotations, .NET, ASP.NET Core, NuGet</PackageTags>
+    <IsPackable>true</IsPackable>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Refit" Version="7.1.2" />
+    <PackageReference Include="Refit.HttpClientFactory" Version="7.1.2" />
+    <PackageReference Include="Refit.Newtonsoft.Json" Version="7.1.2" />
+  <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+</Project>
