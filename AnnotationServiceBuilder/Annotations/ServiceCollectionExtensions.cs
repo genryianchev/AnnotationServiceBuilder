@@ -8,7 +8,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace AnnotationServiceBuilder.Annotations
 {
@@ -30,24 +29,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
         public static void AddRefitClientsFromAttributes(this IServiceCollection services, Assembly assembly, string defaultBaseUrl)
         {
-            // Get all types in the assembly, with caching
-            var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
-
-            // Parallel processing for faster filtering and registration
-            Parallel.ForEach(types, type =>
-            {
-                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
-                {
-                    var attribute = type.GetCustomAttribute<RefitClientAttribute>();
-                    var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
-
-                    services.AddRefitClient(type)
-                            .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
-
-                    // Optional: Log the registration
-                    Console.WriteLine($"Registered Refit Client: {type.FullName}");
-                }
-            });
+            AddRefitClientsFromAttributes(services, assembly, defaultBaseUrl, null);
         }
 
         /// <summary>
@@ -57,32 +39,37 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="assembly">The assembly to scan for Refit clients.</param>
         /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
         /// <param name="customHandler">An optional HTTP message handler to be added to the client pipeline.</param>
-        public static void AddRefitClientsFromAttributes(this IServiceCollection services, Assembly assembly, string defaultBaseUrl, DelegatingHandler customHandler = null)
+        public static void AddRefitClientsFromAttributes(this IServiceCollection services, Assembly assembly, string defaultBaseUrl, DelegatingHandler customHandler)
         {
             // Get all types in the assembly, with caching
             var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
 
-            // Parallel processing for faster filtering and registration
-            Parallel.ForEach(types, type =>
+            foreach (var type in types)
             {
                 if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
                 {
-                    var attribute = type.GetCustomAttribute<RefitClientAttribute>();
-                    var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
+                    // Fetch all RefitClientAttribute attributes (if there are multiple)
+                    var attributes = type.GetCustomAttributes<RefitClientAttribute>();
 
-                    var refitClientBuilder = services.AddRefitClient(type)
-                                                     .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
-
-                    // If a custom handler is provided, add it to the pipeline
-                    if (customHandler != null)
+                    // Process each attribute
+                    foreach (var attribute in attributes)
                     {
-                        refitClientBuilder.AddHttpMessageHandler(() => customHandler);
-                    }
+                        var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
 
-                    // Optional: Log the registration
-                    Console.WriteLine($"Registered Refit Client: {type.FullName}");
+                        var refitClientBuilder = services.AddRefitClient(type)
+                                                         .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
+
+                        // If a custom handler is provided, add it to the pipeline
+                        if (customHandler != null)
+                        {
+                            refitClientBuilder.AddHttpMessageHandler(() => customHandler);
+                        }
+
+                        // Optional: Log the registration
+                        Console.WriteLine($"Registered Refit Client: {type.FullName} with BaseUrl: {baseUrl}");
+                    }
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -95,8 +82,7 @@ namespace AnnotationServiceBuilder.Annotations
             // Get all types in the assembly, with caching
             var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
 
-            // Parallel processing for faster filtering and registration
-            Parallel.ForEach(types, type =>
+            foreach (var type in types)
             {
                 if (type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
                 {
@@ -105,7 +91,7 @@ namespace AnnotationServiceBuilder.Annotations
                     // Optional: Log the registration
                     Console.WriteLine($"Registered Singleton Service: {type.FullName}");
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -118,8 +104,7 @@ namespace AnnotationServiceBuilder.Annotations
             // Get all types in the assembly, with caching
             var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
 
-            // Parallel processing for faster filtering and registration
-            Parallel.ForEach(types, type =>
+            foreach (var type in types)
             {
                 if (type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
                 {
@@ -128,7 +113,7 @@ namespace AnnotationServiceBuilder.Annotations
                     // Optional: Log the registration
                     Console.WriteLine($"Registered Transient Service: {type.FullName}");
                 }
-            });
+            }
         }
 
         /// <summary>
@@ -141,8 +126,7 @@ namespace AnnotationServiceBuilder.Annotations
             // Get all types in the assembly, with caching
             var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
 
-            // Parallel processing for faster filtering and registration
-            Parallel.ForEach(types, type =>
+            foreach (var type in types)
             {
                 if (type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
                 {
@@ -153,10 +137,10 @@ namespace AnnotationServiceBuilder.Annotations
                     // Optional: Log the registration
                     Console.WriteLine($"Registered Scoped Service: {type.FullName}");
                 }
-            });
+            }
 
             // Process generic scoped services separately
-            Parallel.ForEach(types, type =>
+            foreach (var type in types)
             {
                 if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
                 {
@@ -166,7 +150,7 @@ namespace AnnotationServiceBuilder.Annotations
                     // Optional: Log the registration
                     Console.WriteLine($"Registered Scoped Generic Service: {type.FullName}");
                 }
-            });
+            }
         }
     }
 }

@@ -1,32 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Gena\\source\\repos\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj": {}
+    "D:\\Projects\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Gena\\source\\repos\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj": {
-      "version": "1.0.7",
+    "D:\\Projects\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj": {
+      "version": "1.0.8",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Gena\\source\\repos\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
+        "projectUniqueName": "D:\\Projects\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
         "projectName": "AnnotationServiceBuilder",
-        "projectPath": "C:\\Users\\Gena\\source\\repos\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
+        "projectPath": "D:\\Projects\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
         "packagesPath": "C:\\Users\\Gena\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Gena\\source\\repos\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\obj\\",
+        "outputPath": "D:\\Projects\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
           "C:\\Users\\Gena\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Users\\Gena\\source\\repos\\AnnationServiceBilder\\AnnotationServiceBuilder\\bin\\Release\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -39,6 +35,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -77,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }

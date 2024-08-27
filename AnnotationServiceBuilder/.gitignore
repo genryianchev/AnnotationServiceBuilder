@@ -1,0 +1,189 @@
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (Mono Auto Generated)
+mono_crash.*
+
+# Mono auto generated files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+Thumbs.db.lock
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# VS Code directories
+.vscode/
+
+# Python folders
+__pycache__/
+
+# .NET, ASP.NET Core
+bin/
+obj/
+out/
+appsettings.json
+
+# Visual Studio Code configuration files
+.vscode/
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# Rider, JetBrains
+.idea/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Test Results
+TestResults/
+
+# NCrunch
+.ncrunch/
+*.ncrunchstatus
+*.ncrunchsolution
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# SVN directories
+.svn/
+
+# Temporary files created by patch providers
+*.orig
+
+# dotCover is a JetBrains tool
+.dotCover/
+
+# dotTrace is a JetBrains tool
+.dotTrace/
+
+# dotMemory is a JetBrains tool
+.dotMemory/
+
+# TeamCity is a JetBrains tool
+.teamcity/
+
+# .NET, ASP.NET Core, ASP.NET 5
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Auto generated files by JetBrains Rider
+.idea/
+
+# Tooling
+.vscode/
+.vscode/*
+.ionide/
+paket-files/
+
+# Mono auto generated files
+mono_crash.*
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Xcode files
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+
+# OSX folders
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# IntelliJ
+.idea/
+*.iws
+
+# Rider
+.idea/
+*.sln.iml
+.idea_modules/
+
+# Microsoft Visual Studio Code
+.vscode/
+.history
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vscode/*
+.idea/
+.vscode/
