@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v6.0": {
-      "AnnotationServiceBuilder/1.0.6": {
+      "AnnotationServiceBuilder/1.0.7": {
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "8.0.0",
           "Refit": "7.1.2",
@@ -177,7 +177,7 @@
     }
   },
   "libraries": {
-    "AnnotationServiceBuilder/1.0.6": {
+    "AnnotationServiceBuilder/1.0.7": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
