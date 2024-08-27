@@ -5,96 +5,168 @@ using AnnotationServiceBuilder.Data.Transient_Services;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
-using System.Linq;
+using System.Collections.Concurrent;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace AnnotationServiceBuilder.Annotations
 {
     /// <summary>
-    /// Provides extension methods for registering annotated services in the dependency injection container.
+    /// Extension methods for <see cref="IServiceCollection"/> to register services based on custom attributes.
     /// </summary>
     public static class ServiceCollectionExtensions
     {
         /// <summary>
-        /// Registers Refit clients in the dependency injection container based on the <see cref="RefitClientAttribute"/> annotations.
+        /// Cache for types in the assembly to avoid repeated reflection calls.
         /// </summary>
-        /// <param name="services">The <see cref="IServiceCollection"/> to add the clients to.</param>
-        /// <param name="assembly">The assembly to scan for interfaces marked with <see cref="RefitClientAttribute"/>.</param>
-        /// <param name="defaultBaseUrl">The default base URL to use if the <see cref="RefitClientAttribute.BaseUrl"/> is not specified.</param>
+        private static readonly ConcurrentDictionary<Assembly, Type[]> _assemblyTypeCache = new ConcurrentDictionary<Assembly, Type[]>();
+
+        /// <summary>
+        /// Registers Refit clients based on the <see cref="RefitClientAttribute"/> found in the specified assembly.
+        /// </summary>
+        /// <param name="services">The service collection to which the clients are added.</param>
+        /// <param name="assembly">The assembly to scan for Refit clients.</param>
+        /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
         public static void AddRefitClientsFromAttributes(this IServiceCollection services, Assembly assembly, string defaultBaseUrl)
         {
-            var refitClientTypes = assembly.GetTypes()
-                .Where(t => t.IsInterface && t.GetCustomAttribute<RefitClientAttribute>() != null);
+            // Get all types in the assembly, with caching
+            var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
 
-            foreach (var interfaceType in refitClientTypes)
+            // Parallel processing for faster filtering and registration
+            Parallel.ForEach(types, type =>
             {
-                var attribute = interfaceType.GetCustomAttribute<RefitClientAttribute>();
-                var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
+                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
+                {
+                    var attribute = type.GetCustomAttribute<RefitClientAttribute>();
+                    var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
 
-                services.AddRefitClient(interfaceType)
-                        .ConfigureHttpClient(c => c.BaseAddress = baseUrl);
-            }
+                    services.AddRefitClient(type)
+                            .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
+
+                    // Optional: Log the registration
+                    Console.WriteLine($"Registered Refit Client: {type.FullName}");
+                }
+            });
         }
 
         /// <summary>
-        /// Registers services marked with <see cref="SingletonServiceAttribute"/> as singletons in the dependency injection container.
+        /// Registers Refit clients based on the <see cref="RefitClientAttribute"/> found in the specified assembly with an optional custom HTTP handler.
         /// </summary>
-        /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
-        /// <param name="assembly">The assembly to scan for classes marked with <see cref="SingletonServiceAttribute"/>.</param>
+        /// <param name="services">The service collection to which the clients are added.</param>
+        /// <param name="assembly">The assembly to scan for Refit clients.</param>
+        /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
+        /// <param name="customHandler">An optional HTTP message handler to be added to the client pipeline.</param>
+        public static void AddRefitClientsFromAttributes(this IServiceCollection services, Assembly assembly, string defaultBaseUrl, DelegatingHandler customHandler = null)
+        {
+            // Get all types in the assembly, with caching
+            var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
+
+            // Parallel processing for faster filtering and registration
+            Parallel.ForEach(types, type =>
+            {
+                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
+                {
+                    var attribute = type.GetCustomAttribute<RefitClientAttribute>();
+                    var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
+
+                    var refitClientBuilder = services.AddRefitClient(type)
+                                                     .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
+
+                    // If a custom handler is provided, add it to the pipeline
+                    if (customHandler != null)
+                    {
+                        refitClientBuilder.AddHttpMessageHandler(() => customHandler);
+                    }
+
+                    // Optional: Log the registration
+                    Console.WriteLine($"Registered Refit Client: {type.FullName}");
+                }
+            });
+        }
+
+        /// <summary>
+        /// Registers singleton services based on the <see cref="SingletonServiceAttribute"/> found in the specified assembly.
+        /// </summary>
+        /// <param name="services">The service collection to which the singleton services are added.</param>
+        /// <param name="assembly">The assembly to scan for singleton services.</param>
         public static void AddAnnotatedSingletonServices(this IServiceCollection services, Assembly assembly)
         {
-            var singletonTypes = assembly.GetTypes()
-                .Where(t => t.GetCustomAttribute<SingletonServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+            // Get all types in the assembly, with caching
+            var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
 
-            foreach (var type in singletonTypes)
+            // Parallel processing for faster filtering and registration
+            Parallel.ForEach(types, type =>
             {
-                services.AddSingleton(type);
-            }
+                if (type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    services.AddSingleton(type);
+
+                    // Optional: Log the registration
+                    Console.WriteLine($"Registered Singleton Service: {type.FullName}");
+                }
+            });
         }
 
         /// <summary>
-        /// Registers services marked with <see cref="TransientServiceAttribute"/> as transient in the dependency injection container.
+        /// Registers transient services based on the <see cref="TransientServiceAttribute"/> found in the specified assembly.
         /// </summary>
-        /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
-        /// <param name="assembly">The assembly to scan for classes marked with <see cref="TransientServiceAttribute"/>.</param>
+        /// <param name="services">The service collection to which the transient services are added.</param>
+        /// <param name="assembly">The assembly to scan for transient services.</param>
         public static void AddAnnotatedTransientServices(this IServiceCollection services, Assembly assembly)
         {
-            var transientTypes = assembly.GetTypes()
-                .Where(t => t.GetCustomAttribute<TransientServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+            // Get all types in the assembly, with caching
+            var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
 
-            foreach (var type in transientTypes)
+            // Parallel processing for faster filtering and registration
+            Parallel.ForEach(types, type =>
             {
-                services.AddTransient(type);
-            }
+                if (type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    services.AddTransient(type);
+
+                    // Optional: Log the registration
+                    Console.WriteLine($"Registered Transient Service: {type.FullName}");
+                }
+            });
         }
 
         /// <summary>
-        /// Registers services marked with <see cref="ScopedServiceAttribute"/> and <see cref="ScopedGenericServiceAttribute"/> as scoped in the dependency injection container.
+        /// Registers scoped services based on the <see cref="ScopedServiceAttribute"/> and <see cref="ScopedGenericServiceAttribute"/> found in the specified assembly.
         /// </summary>
-        /// <param name="services">The <see cref="IServiceCollection"/> to add the services to.</param>
-        /// <param name="assembly">The assembly to scan for classes marked with <see cref="ScopedServiceAttribute"/> and <see cref="ScopedGenericServiceAttribute"/>.</param>
+        /// <param name="services">The service collection to which the scoped services are added.</param>
+        /// <param name="assembly">The assembly to scan for scoped services.</param>
         public static void AddAnnotatedScopedServices(this IServiceCollection services, Assembly assembly)
         {
-            // Register non-generic scoped services
-            var scopedTypes = assembly.GetTypes()
-                .Where(t => t.GetCustomAttribute<ScopedServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+            // Get all types in the assembly, with caching
+            var types = _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
 
-            foreach (var type in scopedTypes)
+            // Parallel processing for faster filtering and registration
+            Parallel.ForEach(types, type =>
             {
-                var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
-                var serviceType = attribute.ServiceType ?? type;
-                services.AddScoped(serviceType, type);
-            }
+                if (type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
+                    var serviceType = attribute.ServiceType ?? type;
+                    services.AddScoped(serviceType, type);
 
-            // Register generic scoped services
-            var genericScopedTypes = assembly.GetTypes()
-                .Where(t => t.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && t.IsClass && !t.IsAbstract);
+                    // Optional: Log the registration
+                    Console.WriteLine($"Registered Scoped Service: {type.FullName}");
+                }
+            });
 
-            foreach (var type in genericScopedTypes)
+            // Process generic scoped services separately
+            Parallel.ForEach(types, type =>
             {
-                var attribute = type.GetCustomAttribute<ScopedGenericServiceAttribute>();
-                services.AddScoped(attribute.ServiceType, type);
-            }
+                if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    var attribute = type.GetCustomAttribute<ScopedGenericServiceAttribute>();
+                    services.AddScoped(attribute.ServiceType, type);
+
+                    // Optional: Log the registration
+                    Console.WriteLine($"Registered Scoped Generic Service: {type.FullName}");
+                }
+            });
         }
     }
 }
