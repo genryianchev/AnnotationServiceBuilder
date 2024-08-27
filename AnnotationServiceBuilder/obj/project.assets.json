@@ -158,19 +158,6 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Newtonsoft.Json/13.0.3": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        }
-      },
       "Refit/7.1.2": {
         "type": "package",
         "dependencies": {
@@ -204,23 +191,6 @@
         },
         "runtime": {
           "lib/net6.0/Refit.HttpClientFactory.dll": {
-            "related": ".xml"
-          }
-        }
-      },
-      "Refit.Newtonsoft.Json/7.1.2": {
-        "type": "package",
-        "dependencies": {
-          "Newtonsoft.Json": "13.0.3",
-          "Refit": "7.1.2"
-        },
-        "compile": {
-          "lib/net6.0/Refit.Newtonsoft.Json.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/Refit.Newtonsoft.Json.dll": {
             "related": ".xml"
           }
         }
@@ -614,36 +584,6 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Newtonsoft.Json/13.0.3": {
-      "sha512": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
-      "type": "package",
-      "path": "newtonsoft.json/13.0.3",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE.md",
-        "README.md",
-        "lib/net20/Newtonsoft.Json.dll",
-        "lib/net20/Newtonsoft.Json.xml",
-        "lib/net35/Newtonsoft.Json.dll",
-        "lib/net35/Newtonsoft.Json.xml",
-        "lib/net40/Newtonsoft.Json.dll",
-        "lib/net40/Newtonsoft.Json.xml",
-        "lib/net45/Newtonsoft.Json.dll",
-        "lib/net45/Newtonsoft.Json.xml",
-        "lib/net6.0/Newtonsoft.Json.dll",
-        "lib/net6.0/Newtonsoft.Json.xml",
-        "lib/netstandard1.0/Newtonsoft.Json.dll",
-        "lib/netstandard1.0/Newtonsoft.Json.xml",
-        "lib/netstandard1.3/Newtonsoft.Json.dll",
-        "lib/netstandard1.3/Newtonsoft.Json.xml",
-        "lib/netstandard2.0/Newtonsoft.Json.dll",
-        "lib/netstandard2.0/Newtonsoft.Json.xml",
-        "newtonsoft.json.13.0.3.nupkg.sha512",
-        "newtonsoft.json.nuspec",
-        "packageIcon.png"
-      ]
-    },
     "Refit/7.1.2": {
       "sha512": "ZB1ZgciDq/lNz3OAPfYah4rCVYeI4LMxEksYUff8p4Bth9uf/8WQCXuzMckRJjh3NLysuwdCNkgxnezCm1SqTw==",
       "type": "package",
@@ -690,28 +630,6 @@
         "lib/netstandard2.0/Refit.HttpClientFactory.xml",
         "refit.httpclientfactory.7.1.2.nupkg.sha512",
         "refit.httpclientfactory.nuspec",
-        "refit_logo.png"
-      ]
-    },
-    "Refit.Newtonsoft.Json/7.1.2": {
-      "sha512": "eT+WT61XpiTAnOgM8OcXjWjQ71UDyZif7oMO10nc+4p9IzFsquYGewbc7iSG5zfuNX0ofJVe8gxd8Ag7VevdzQ==",
-      "type": "package",
-      "path": "refit.newtonsoft.json/7.1.2",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE/LICENSE",
-        "README.md",
-        "lib/net462/Refit.Newtonsoft.Json.dll",
-        "lib/net462/Refit.Newtonsoft.Json.xml",
-        "lib/net6.0/Refit.Newtonsoft.Json.dll",
-        "lib/net6.0/Refit.Newtonsoft.Json.xml",
-        "lib/net8.0/Refit.Newtonsoft.Json.dll",
-        "lib/net8.0/Refit.Newtonsoft.Json.xml",
-        "lib/netstandard2.0/Refit.Newtonsoft.Json.dll",
-        "lib/netstandard2.0/Refit.Newtonsoft.Json.xml",
-        "refit.newtonsoft.json.7.1.2.nupkg.sha512",
-        "refit.newtonsoft.json.nuspec",
         "refit_logo.png"
       ]
     },
@@ -881,9 +799,9 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
+      "Microsoft.Extensions.DependencyInjection >= 8.0.0",
       "Refit >= 7.1.2",
-      "Refit.HttpClientFactory >= 7.1.2",
-      "Refit.Newtonsoft.Json >= 7.1.2"
+      "Refit.HttpClientFactory >= 7.1.2"
     ]
   },
   "packageFolders": {
@@ -891,13 +809,13 @@
     "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
-    "version": "1.0.4",
+    "version": "1.0.6",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Gena\\source\\repos\\AnnationServiceBilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
+      "projectUniqueName": "C:\\Users\\Gena\\source\\repos\\ClassLibrary1\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
       "projectName": "AnnotationServiceBuilder",
-      "projectPath": "C:\\Users\\Gena\\source\\repos\\AnnationServiceBilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
+      "projectPath": "C:\\Users\\Gena\\source\\repos\\ClassLibrary1\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
       "packagesPath": "C:\\Users\\Gena\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Gena\\source\\repos\\AnnationServiceBilder\\AnnotationServiceBuilder\\obj\\",
+      "outputPath": "C:\\Users\\Gena\\source\\repos\\ClassLibrary1\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
@@ -912,6 +830,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Users\\Gena\\source\\repos\\ClassLibrary1\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\bin\\Debug": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -930,15 +849,15 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": {
+            "target": "Package",
+            "version": "[8.0.0, )"
+          },
           "Refit": {
             "target": "Package",
             "version": "[7.1.2, )"
           },
           "Refit.HttpClientFactory": {
-            "target": "Package",
-            "version": "[7.1.2, )"
-          },
-          "Refit.Newtonsoft.Json": {
             "target": "Package",
             "version": "[7.1.2, )"
           }
