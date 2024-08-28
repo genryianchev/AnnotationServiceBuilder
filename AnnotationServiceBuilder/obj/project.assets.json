@@ -808,7 +808,7 @@
     "C:\\Users\\Gena\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.8",
+    "version": "1.0.9",
     "restore": {
       "projectUniqueName": "D:\\Projects\\AnnotationServiceBuilder\\AnnotationServiceBuilder\\AnnotationServiceBuilder.csproj",
       "projectName": "AnnotationServiceBuilder",

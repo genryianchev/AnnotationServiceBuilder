@@ -39,6 +39,8 @@ dotnet add package AnnotationServiceBuilder
 
 Follow these steps to configure and use AnnotationServiceBuilder in your project.
 
+### If You're Using a Version Before 1.0.8
+
 Add the following to your `Startup.cs` or `Program.cs`:
 
 ```csharp
@@ -47,6 +49,30 @@ builder.Services.AddAnnotatedSingletonServices(assembly);
 builder.Services.AddAnnotatedScopedServices(assembly);
 builder.Services.AddAnnotatedTransientServices(assembly);
 builder.Services.AddRefitClientsFromAttributes(assembly, "https://api.yourservice.com"); // Replace with your API base URL
+```
+
+### If You're Using Version 1.0.8 or Later
+
+First, create an instance of `ServiceCollectionExtensions`:
+
+```csharp
+var registrar = new ServiceCollectionExtensions(Assembly.GetExecutingAssembly());
+```
+
+Then, register your services:
+
+```csharp
+registrar.AddSingletonServices(services);
+registrar.AddScopedServices(services);
+registrar.AddTransientServices(services);
+registrar.AddRefitClients(services, "https://api.yourservice.com"); // Replace with your API base URL
+```
+
+If you need to use a custom `DelegatingHandler`, you can do so with the following:
+
+```csharp
+var customHandler = new MyCustomHandler();
+registrar.AddRefitClients(services, "https://api.yourservice.com", customHandler);
 ```
 
 ## Usage

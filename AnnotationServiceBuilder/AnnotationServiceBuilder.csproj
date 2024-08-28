@@ -3,7 +3,7 @@
 <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PackageId>AnnotationServiceBuilder</PackageId> 
-    <Version>1.0.8</Version> 
+    <Version>1.0.9</Version> 
     <Authors>AnnotationServiceBuilder</Authors> 
     <Company>AnnotationServiceBuilder</Company> 
     <Product>AnnotationServiceBuilder</Product> 
