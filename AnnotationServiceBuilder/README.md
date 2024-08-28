@@ -39,7 +39,7 @@ dotnet add package AnnotationServiceBuilder
 
 Follow these steps to configure and use AnnotationServiceBuilder in your project.
 
-### If You're Using a Version Before 1.0.8
+### If You're Using a Version 1.0.8
 
 Add the following to your `Startup.cs` or `Program.cs`:
 
@@ -51,12 +51,14 @@ builder.Services.AddAnnotatedTransientServices(assembly);
 builder.Services.AddRefitClientsFromAttributes(assembly, "https://api.yourservice.com"); // Replace with your API base URL
 ```
 
-### If You're Using Version 1.0.8 or Later
+### If You're Using Version 1.0.9
 
-First, create an instance of `ServiceCollectionExtensions`:
+First, create an instance of
+
+ `AnnotationServiceRegistrar`:
 
 ```csharp
-var registrar = new ServiceCollectionExtensions(Assembly.GetExecutingAssembly());
+var registrar = new AnnotationServiceRegistrar(Assembly.GetExecutingAssembly());
 ```
 
 Then, register your services:
@@ -73,6 +75,26 @@ If you need to use a custom `DelegatingHandler`, you can do so with the followin
 ```csharp
 var customHandler = new MyCustomHandler();
 registrar.AddRefitClients(services, "https://api.yourservice.com", customHandler);
+```
+
+### If You're Using Version 1.1.1 or Later
+
+Instead of creating an instance of `AnnotationServiceRegistrar`, use the static method `Initialize` to set up the types and then call the registration methods:
+
+```csharp
+AnnotationServiceRegistrar.Initialize(Assembly.GetExecutingAssembly());
+
+AnnotationServiceRegistrar.AddSingletonServices(services);
+AnnotationServiceRegistrar.AddScopedServices(services);
+AnnotationServiceRegistrar.AddTransientServices(services);
+AnnotationServiceRegistrar.AddRefitClients(services, "https://api.yourservice.com"); // Replace with your API base URL
+```
+
+If you need to use a custom `DelegatingHandler`, use the following:
+
+```csharp
+var customHandler = new MyCustomHandler();
+AnnotationServiceRegistrar.AddRefitClients(services, "https://api.yourservice.com", customHandler);
 ```
 
 ## Usage
