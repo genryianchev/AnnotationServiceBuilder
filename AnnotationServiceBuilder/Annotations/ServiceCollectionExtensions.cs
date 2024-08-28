@@ -14,17 +14,16 @@ namespace AnnotationServiceBuilder.Annotations
     /// <summary>
     /// Service registration based on custom attributes found in the specified assembly.
     /// </summary>
-    public class ServiceCollectionExtensions
+    public static class AnnotationServiceRegistrar
     {
         private static readonly ConcurrentDictionary<Assembly, Type[]> _assemblyTypeCache = new ConcurrentDictionary<Assembly, Type[]>();
-
-        private readonly Type[] _types;
+        private static Type[] _types;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ServiceCollectionExtensions"/> class.
+        /// Initializes the static class by caching the types from the provided assembly.
         /// </summary>
         /// <param name="assembly">The assembly to scan for services.</param>
-        public ServiceCollectionExtensions(Assembly assembly)
+        public static void Initialize(Assembly assembly)
         {
             _types = GetTypesFromAssembly(assembly);
         }
@@ -44,7 +43,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// </summary>
         /// <param name="services">The service collection to which the clients are added.</param>
         /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
-        public void AddRefitClients(IServiceCollection services, string defaultBaseUrl)
+        public static void AddRefitClients(IServiceCollection services, string defaultBaseUrl)
         {
             foreach (var type in _types)
             {
@@ -69,7 +68,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="services">The service collection to which the clients are added.</param>
         /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
         /// <param name="customHandler">A custom HTTP message handler to be added to the client pipeline.</param>
-        public void AddRefitClients(IServiceCollection services, string defaultBaseUrl, DelegatingHandler customHandler)
+        public static void AddRefitClients(IServiceCollection services, string defaultBaseUrl, DelegatingHandler customHandler)
         {
             foreach (var type in _types)
             {
@@ -97,7 +96,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// Registers singleton services based on the <see cref="SingletonServiceAttribute"/> found in the specified assembly.
         /// </summary>
         /// <param name="services">The service collection to which the singleton services are added.</param>
-        public void AddSingletonServices(IServiceCollection services)
+        public static void AddSingletonServices(IServiceCollection services)
         {
             foreach (var type in _types)
             {
@@ -113,7 +112,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// Registers transient services based on the <see cref="TransientServiceAttribute"/> found in the specified assembly.
         /// </summary>
         /// <param name="services">The service collection to which the transient services are added.</param>
-        public void AddTransientServices(IServiceCollection services)
+        public static void AddTransientServices(IServiceCollection services)
         {
             foreach (var type in _types)
             {
@@ -129,7 +128,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// Registers scoped services based on the <see cref="ScopedServiceAttribute"/> and <see cref="ScopedGenericServiceAttribute"/> found in the specified assembly.
         /// </summary>
         /// <param name="services">The service collection to which the scoped services are added.</param>
-        public void AddScopedServices(IServiceCollection services)
+        public static void AddScopedServices(IServiceCollection services)
         {
             foreach (var type in _types)
             {
@@ -158,7 +157,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// </summary>
         /// <param name="services">The service collection to which the services are added.</param>
         /// <param name="defaultBaseUrl">The default base URL to use for Refit clients if none is specified in the attribute.</param>
-        public void AddAllServices(IServiceCollection services, string defaultBaseUrl)
+        public static void AddAllServices(IServiceCollection services, string defaultBaseUrl)
         {
             AddRefitClients(services, defaultBaseUrl);
             AddSingletonServices(services);
@@ -172,7 +171,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="services">The service collection to which the services are added.</param>
         /// <param name="defaultBaseUrl">The default base URL to use for Refit clients if none is specified in the attribute.</param>
         /// <param name="customHandler">A custom HTTP message handler to be added to Refit clients.</param>
-        public void AddAllServices(IServiceCollection services, string defaultBaseUrl, DelegatingHandler customHandler)
+        public static void AddAllServices(IServiceCollection services, string defaultBaseUrl, DelegatingHandler customHandler)
         {
             AddRefitClients(services, defaultBaseUrl, customHandler);
             AddSingletonServices(services);
