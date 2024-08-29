@@ -39,7 +39,7 @@ dotnet add package AnnotationServiceBuilder
 
 Follow these steps to configure and use AnnotationServiceBuilder in your project.
 
-### If You're Using a Version 1.0.8
+### If You're Using before Version 1.0.9
 
 Add the following to your `Startup.cs` or `Program.cs`:
 
@@ -53,9 +53,7 @@ builder.Services.AddRefitClientsFromAttributes(assembly, "https://api.yourservic
 
 ### If You're Using Version 1.0.9
 
-First, create an instance of
-
- `AnnotationServiceRegistrar`:
+First, create an instance of `AnnotationServiceRegistrar`:
 
 ```csharp
 var registrar = new AnnotationServiceRegistrar(Assembly.GetExecutingAssembly());
@@ -179,6 +177,10 @@ The library provides a simple, intuitive API for registering services and Refit 
 ### 5. **Caching for Performance**
 
 Registered classes and interfaces are cached to improve performance and reduce the overhead of repeated reflection operations.
+
+## Video Guide
+
+For a video guide on how to use AnnotationServiceBuilder, you can watch this YouTube video: [AnnotationServiceBuilder Guide](https://www.youtube.com/watch?v=kofPf606OBE).
 
 ## Contributing
 
