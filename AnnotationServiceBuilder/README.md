@@ -135,7 +135,7 @@ public class MyTransientService
 }
 ```
 
-### **4. Using Refit Clients**
+### **4. Example of a Refit Client**
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Refit;
@@ -152,6 +152,37 @@ namespace AnnotationServiceBuilder.Network.Repositories
 
         [Get("/posts/{id}")]
         Task<Post> GetPostByIdAsync(int id);
+    }
+}
+```
+
+### **5. Example with Different `baseUrl` for Multiple Refit Clients**
+
+```csharp
+using AnnotationServiceBuilder.Annotations.Refit;
+using Refit;
+
+namespace AnnotationServiceBuilder.Network.Repositories
+{
+    [RefitClient(BaseUrl = "https://api.service1.com")]
+    public interface IService1Api
+    {
+        [Get("/endpoint1")]
+        Task<List<ResponseModel1>> GetService1DataAsync();
+    }
+
+    [RefitClient(BaseUrl = "https://api.service2.com")]
+    public interface IService2Api
+    {
+        [Get("/endpoint2")]
+        Task<List<ResponseModel2>> GetService2DataAsync();
+    }
+
+    [RefitClient(BaseUrl = "https://api.service3.com")]
+    public interface IService3Api
+    {
+        [Get("/endpoint3")]
+        Task<List<ResponseModel3>> GetService3DataAsync();
     }
 }
 ```
@@ -212,3 +243,4 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
