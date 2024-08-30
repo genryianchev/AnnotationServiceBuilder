@@ -1,7 +1,4 @@
 ---
-
-![AnnotationServiceBuilder Icon](https://github.com/genryianchev/AnnotationServiceBuilder/raw/main/AnnotationServiceBuilder/icon.png)
-
 # AnnotationServiceBuilder
 
 **AnnotationServiceBuilder** is an ASP.NET Core library that simplifies dependency injection by using custom annotations to automatically register services in the DI container.
