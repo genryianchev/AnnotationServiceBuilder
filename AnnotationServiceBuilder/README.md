@@ -213,6 +213,7 @@ If this approach doesn't help, you may try to manually apply trimming safety con
 ```csharp
 using System.Diagnostics.CodeAnalysis;
 
+[SingletonService]
 public class StockPartsService
 {
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(MyDependentService))]
@@ -229,6 +230,7 @@ public class StockPartsService
 using System.Runtime.CompilerServices;
 
 [Preserve]
+[SingletonService]
 public class MyDependentService
 {
     public void PerformOperation()
