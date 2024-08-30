@@ -1,4 +1,6 @@
-# AnnotationServiceBuilder
+---
+
+# ![AnnotationServiceBuilder Icon](https://github.com/genryianchev/AnnotationServiceBuilder/tree/main/AnnotationServiceBuilder/icon.png) AnnotationServiceBuilder
 
 **AnnotationServiceBuilder** is an ASP.NET Core library that simplifies dependency injection by using custom annotations to automatically register services in the DI container.
 
@@ -209,9 +211,15 @@ The library provides a simple, intuitive API for registering services and Refit 
 
 Registered classes and interfaces are cached to improve performance and reduce the overhead of repeated reflection operations.
 
-## Video Guide
+## Video Guides
 
-For a video guide on how to use AnnotationServiceBuilder, you can watch this YouTube video: [AnnotationServiceBuilder Guide](https://www.youtube.com/watch?v=kofPf606OBE).
+For video guides on how to use AnnotationServiceBuilder, you can watch these YouTube videos:
+- [AnnotationServiceBuilder Guide 1](https://www.youtube.com/watch?v=kofPf606OBE)
+- [AnnotationServiceBuilder Guide 2](https://www.youtube.com/watch?v=tspUekM_UHg&t=3s)
+
+## Additional Resources
+
+- [AnnotationServiceBuilder Examples](https://github.com/genryianchev/AnnotationServiceBuilderExamples)
 
 ## Contributing
 
@@ -244,3 +252,5 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+---
