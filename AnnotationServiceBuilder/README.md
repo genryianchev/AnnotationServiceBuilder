@@ -1,6 +1,3 @@
-
----
-
 # ![AnnotationServiceBuilder Icon](https://github.com/genryianchev/AnnotationServiceBuilder/raw/main/AnnotationServiceBuilder/icon.png) AnnotationServiceBuilder
 
 **AnnotationServiceBuilder** is an ASP.NET Core library that simplifies dependency injection by using custom annotations to automatically register services in the DI container.
@@ -190,6 +187,59 @@ namespace AnnotationServiceBuilder.Network.Repositories
 }
 ```
 
+## Trimming Safety Considerations
+
+When using advanced features like trimming or Ahead-of-Time (AOT) compilation, certain considerations must be made. Assembly scanning, as used in AnnotationServiceBuilder, can prevent trimming from working effectively. This is because concrete implementations that are not directly referenced in code (common with interfaces) might be trimmed out. Enabling the trimming analyzer will provide warnings that this approach may break trimming or AOT.
+
+To mitigate this, you can use attributes like `DynamicDependency` or `Preserve` to ensure specific types or members are retained during the trimming process.
+
+### If You're Using Version 1.1.1 or Later with Trimming Safety
+
+Instead of creating an instance of `AnnotationServiceRegistrar`, use the static method `Initialize` to set up the types and then call the trimming safety registration methods:
+
+```csharp
+AnnotationServiceRegistrar.Initialize(Assembly.GetExecutingAssembly());
+
+AnnotationServiceRegistrar.AddSingletonServicesWithTrimmingSafety(services);
+AnnotationServiceRegistrar.AddScopedServicesWithTrimmingSafety(services);
+AnnotationServiceRegistrar.AddTransientServicesWithTrimmingSafety(services);
+AnnotationServiceRegistrar.AddRefitClientsWithTrimmingSafety(services, "https://api.yourservice.com"); // Replace with your API base URL
+```
+
+If this approach doesn't help, you may try to manually apply trimming safety considerations:
+
+### Example of Using `DynamicDependency`
+
+```csharp
+using System.Diagnostics.CodeAnalysis;
+
+public class StockPartsService
+{
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(MyDependentService))]
+    public StockPartsService()
+    {
+        // Method implementation ensuring MyDependentService is retained
+    }
+}
+```
+
+### Example of Using `Preserve`
+
+```csharp
+using System.Runtime.CompilerServices;
+
+[Preserve]
+public class MyDependentService
+{
+    public void PerformOperation()
+    {
+        // Implementation that must be retained during trimming
+    }
+}
+```
+
+The `Preserve` attribute can be used to mark entire classes or methods to be preserved during trimming. This ensures that your critical code isn't removed during the optimization processes like AOT.
+
 ## Benefits of Using AnnotationServiceBuilder
 
 ### 1. **Automation of Service Registration**
@@ -247,11 +297,12 @@ copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+FITNESS FOR A PARTICULAR
+
+ PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
----

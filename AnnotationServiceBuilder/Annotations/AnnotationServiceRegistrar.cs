@@ -6,7 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
 using System.Collections.Concurrent;
-using System.Net.Http;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace AnnotationServiceBuilder.Annotations
@@ -38,6 +38,8 @@ namespace AnnotationServiceBuilder.Annotations
             return _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
         }
 
+        #region Standard Methods
+
         /// <summary>
         /// Registers Refit clients based on the <see cref="RefitClientAttribute"/> found in the specified assembly.
         /// </summary>
@@ -55,36 +57,6 @@ namespace AnnotationServiceBuilder.Annotations
                         var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
                         var refitClientBuilder = services.AddRefitClient(type)
                                                          .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
-
-                        Console.WriteLine($"Registered Refit Client: {type.FullName} with BaseUrl: {baseUrl}");
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Registers Refit clients based on the <see cref="RefitClientAttribute"/> found in the specified assembly with a custom HTTP message handler.
-        /// </summary>
-        /// <param name="services">The service collection to which the clients are added.</param>
-        /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
-        /// <param name="customHandler">A custom HTTP message handler to be added to the client pipeline.</param>
-        public static void AddRefitClients(IServiceCollection services, string defaultBaseUrl, DelegatingHandler customHandler)
-        {
-            foreach (var type in _types)
-            {
-                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
-                {
-                    var attributes = type.GetCustomAttributes<RefitClientAttribute>();
-                    foreach (var attribute in attributes)
-                    {
-                        var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
-                        var refitClientBuilder = services.AddRefitClient(type)
-                                                         .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
-
-                        if (customHandler != null)
-                        {
-                            refitClientBuilder.AddHttpMessageHandler(() => customHandler);
-                        }
 
                         Console.WriteLine($"Registered Refit Client: {type.FullName} with BaseUrl: {baseUrl}");
                     }
@@ -165,18 +137,112 @@ namespace AnnotationServiceBuilder.Annotations
             AddScopedServices(services);
         }
 
+        #endregion
+
+        #region Trimming Safety Methods
+
         /// <summary>
-        /// Registers all services based on custom attributes found in the specified assembly with a custom HTTP message handler.
+        /// Registers Refit clients with trimming and AOT safety by using <see cref="DynamicDependencyAttribute"/>.
+        /// </summary>
+        /// <param name="services">The service collection to which the clients are added.</param>
+        /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(RefitClientAttribute))]
+        public static void AddRefitClientsWithTrimmingSafety(IServiceCollection services, string defaultBaseUrl)
+        {
+            foreach (var type in _types)
+            {
+                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
+                {
+                    var attributes = type.GetCustomAttributes<RefitClientAttribute>();
+                    foreach (var attribute in attributes)
+                    {
+                        var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
+                        var refitClientBuilder = services.AddRefitClient(type)
+                                                         .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
+
+                        Console.WriteLine($"Registered Refit Client (with Trimming Safety): {type.FullName} with BaseUrl: {baseUrl}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registers singleton services with trimming and AOT safety by using <see cref="DynamicDependencyAttribute"/>.
+        /// </summary>
+        /// <param name="services">The service collection to which the singleton services are added.</param>
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SingletonServiceAttribute))]
+        public static void AddSingletonServicesWithTrimmingSafety(IServiceCollection services)
+        {
+            foreach (var type in _types)
+            {
+                if (type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    services.AddSingleton(type);
+                    Console.WriteLine($"Registered Singleton Service (with Trimming Safety): {type.FullName}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registers transient services with trimming and AOT safety by using <see cref="DynamicDependencyAttribute"/>.
+        /// </summary>
+        /// <param name="services">The service collection to which the transient services are added.</param>
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TransientServiceAttribute))]
+        public static void AddTransientServicesWithTrimmingSafety(IServiceCollection services)
+        {
+            foreach (var type in _types)
+            {
+                if (type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    services.AddTransient(type);
+                    Console.WriteLine($"Registered Transient Service (with Trimming Safety): {type.FullName}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registers scoped services with trimming and AOT safety by using <see cref="DynamicDependencyAttribute"/>.
+        /// </summary>
+        /// <param name="services">The service collection to which the scoped services are added.</param>
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ScopedServiceAttribute))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ScopedGenericServiceAttribute))]
+        public static void AddScopedServicesWithTrimmingSafety(IServiceCollection services)
+        {
+            foreach (var type in _types)
+            {
+                if (type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
+                    var serviceType = attribute.ServiceType ?? type;
+                    services.AddScoped(serviceType, type);
+                    Console.WriteLine($"Registered Scoped Service (with Trimming Safety): {type.FullName}");
+                }
+            }
+
+            foreach (var type in _types)
+            {
+                if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    var attribute = type.GetCustomAttribute<ScopedGenericServiceAttribute>();
+                    services.AddScoped(attribute.ServiceType, type);
+                    Console.WriteLine($"Registered Scoped Generic Service (with Trimming Safety): {type.FullName}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registers all services with trimming and AOT safety by using <see cref="DynamicDependencyAttribute"/>.
         /// </summary>
         /// <param name="services">The service collection to which the services are added.</param>
         /// <param name="defaultBaseUrl">The default base URL to use for Refit clients if none is specified in the attribute.</param>
-        /// <param name="customHandler">A custom HTTP message handler to be added to Refit clients.</param>
-        public static void AddAllServices(IServiceCollection services, string defaultBaseUrl, DelegatingHandler customHandler)
+        public static void AddAllServicesWithTrimmingSafety(IServiceCollection services, string defaultBaseUrl)
         {
-            AddRefitClients(services, defaultBaseUrl, customHandler);
-            AddSingletonServices(services);
-            AddTransientServices(services);
-            AddScopedServices(services);
+            AddRefitClientsWithTrimmingSafety(services, defaultBaseUrl);
+            AddSingletonServicesWithTrimmingSafety(services);
+            AddTransientServicesWithTrimmingSafety(services);
+            AddScopedServicesWithTrimmingSafety(services);
         }
+
+        #endregion
     }
 }
