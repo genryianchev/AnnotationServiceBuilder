@@ -13,6 +13,7 @@ namespace AnnotationServiceBuilder.Annotations
 {
     /// <summary>
     /// Service registration based on custom attributes found in the specified assembly.
+    /// This class provides methods for registering services with and without Trimming Safety support.
     /// </summary>
     public static class AnnotationServiceRegistrar
     {
@@ -38,7 +39,7 @@ namespace AnnotationServiceBuilder.Annotations
             return _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
         }
 
-        #region Standard Methods
+        #region Service Registration Methods
 
         /// <summary>
         /// Registers Refit clients based on the <see cref="RefitClientAttribute"/> found in the specified assembly.
@@ -47,21 +48,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
         public static void AddRefitClients(IServiceCollection services, string defaultBaseUrl)
         {
-            foreach (var type in _types)
-            {
-                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
-                {
-                    var attributes = type.GetCustomAttributes<RefitClientAttribute>();
-                    foreach (var attribute in attributes)
-                    {
-                        var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
-                        var refitClientBuilder = services.AddRefitClient(type)
-                                                         .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
-
-                        Console.WriteLine($"Registered Refit Client: {type.FullName} with BaseUrl: {baseUrl}");
-                    }
-                }
-            }
+            RegisterRefitClients(services, defaultBaseUrl);
         }
 
         /// <summary>
@@ -70,14 +57,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="services">The service collection to which the singleton services are added.</param>
         public static void AddSingletonServices(IServiceCollection services)
         {
-            foreach (var type in _types)
-            {
-                if (type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    services.AddSingleton(type);
-                    Console.WriteLine($"Registered Singleton Service: {type.FullName}");
-                }
-            }
+            RegisterSingletonServices(services);
         }
 
         /// <summary>
@@ -86,14 +66,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="services">The service collection to which the transient services are added.</param>
         public static void AddTransientServices(IServiceCollection services)
         {
-            foreach (var type in _types)
-            {
-                if (type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    services.AddTransient(type);
-                    Console.WriteLine($"Registered Transient Service: {type.FullName}");
-                }
-            }
+            RegisterTransientServices(services);
         }
 
         /// <summary>
@@ -102,26 +75,7 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="services">The service collection to which the scoped services are added.</param>
         public static void AddScopedServices(IServiceCollection services)
         {
-            foreach (var type in _types)
-            {
-                if (type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
-                    var serviceType = attribute.ServiceType ?? type;
-                    services.AddScoped(serviceType, type);
-                    Console.WriteLine($"Registered Scoped Service: {type.FullName}");
-                }
-            }
-
-            foreach (var type in _types)
-            {
-                if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    var attribute = type.GetCustomAttribute<ScopedGenericServiceAttribute>();
-                    services.AddScoped(attribute.ServiceType, type);
-                    Console.WriteLine($"Registered Scoped Generic Service: {type.FullName}");
-                }
-            }
+            RegisterScopedServices(services);
         }
 
         /// <summary>
@@ -149,21 +103,7 @@ namespace AnnotationServiceBuilder.Annotations
         [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(RefitClientAttribute))]
         public static void AddRefitClientsWithTrimmingSafety(IServiceCollection services, string defaultBaseUrl)
         {
-            foreach (var type in _types)
-            {
-                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
-                {
-                    var attributes = type.GetCustomAttributes<RefitClientAttribute>();
-                    foreach (var attribute in attributes)
-                    {
-                        var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
-                        var refitClientBuilder = services.AddRefitClient(type)
-                                                         .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
-
-                        Console.WriteLine($"Registered Refit Client (with Trimming Safety): {type.FullName} with BaseUrl: {baseUrl}");
-                    }
-                }
-            }
+            RegisterRefitClients(services, defaultBaseUrl);
         }
 
         /// <summary>
@@ -173,14 +113,7 @@ namespace AnnotationServiceBuilder.Annotations
         [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SingletonServiceAttribute))]
         public static void AddSingletonServicesWithTrimmingSafety(IServiceCollection services)
         {
-            foreach (var type in _types)
-            {
-                if (type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    services.AddSingleton(type);
-                    Console.WriteLine($"Registered Singleton Service (with Trimming Safety): {type.FullName}");
-                }
-            }
+            RegisterSingletonServices(services);
         }
 
         /// <summary>
@@ -190,14 +123,7 @@ namespace AnnotationServiceBuilder.Annotations
         [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(TransientServiceAttribute))]
         public static void AddTransientServicesWithTrimmingSafety(IServiceCollection services)
         {
-            foreach (var type in _types)
-            {
-                if (type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    services.AddTransient(type);
-                    Console.WriteLine($"Registered Transient Service (with Trimming Safety): {type.FullName}");
-                }
-            }
+            RegisterTransientServices(services);
         }
 
         /// <summary>
@@ -208,26 +134,7 @@ namespace AnnotationServiceBuilder.Annotations
         [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(ScopedGenericServiceAttribute))]
         public static void AddScopedServicesWithTrimmingSafety(IServiceCollection services)
         {
-            foreach (var type in _types)
-            {
-                if (type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
-                    var serviceType = attribute.ServiceType ?? type;
-                    services.AddScoped(serviceType, type);
-                    Console.WriteLine($"Registered Scoped Service (with Trimming Safety): {type.FullName}");
-                }
-            }
-
-            foreach (var type in _types)
-            {
-                if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    var attribute = type.GetCustomAttribute<ScopedGenericServiceAttribute>();
-                    services.AddScoped(attribute.ServiceType, type);
-                    Console.WriteLine($"Registered Scoped Generic Service (with Trimming Safety): {type.FullName}");
-                }
-            }
+            RegisterScopedServices(services);
         }
 
         /// <summary>
@@ -241,6 +148,94 @@ namespace AnnotationServiceBuilder.Annotations
             AddSingletonServicesWithTrimmingSafety(services);
             AddTransientServicesWithTrimmingSafety(services);
             AddScopedServicesWithTrimmingSafety(services);
+        }
+
+        #endregion
+
+        #region Private Registration Helpers
+
+        /// <summary>
+        /// Registers Refit clients based on the <see cref="RefitClientAttribute"/> found in the specified assembly.
+        /// </summary>
+        /// <param name="services">The service collection to which the clients are added.</param>
+        /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
+        private static void RegisterRefitClients(IServiceCollection services, string defaultBaseUrl)
+        {
+            foreach (var type in _types)
+            {
+                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
+                {
+                    var attributes = type.GetCustomAttributes<RefitClientAttribute>();
+                    foreach (var attribute in attributes)
+                    {
+                        var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
+                        var refitClientBuilder = services.AddRefitClient(type)
+                                                         .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
+
+                        Console.WriteLine($"Registered Refit Client: {type.FullName} with BaseUrl: {baseUrl}");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registers singleton services based on the <see cref="SingletonServiceAttribute"/> found in the specified assembly.
+        /// </summary>
+        /// <param name="services">The service collection to which the singleton services are added.</param>
+        private static void RegisterSingletonServices(IServiceCollection services)
+        {
+            foreach (var type in _types)
+            {
+                if (type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    services.AddSingleton(type);
+                    Console.WriteLine($"Registered Singleton Service: {type.FullName}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registers transient services based on the <see cref="TransientServiceAttribute"/> found in the specified assembly.
+        /// </summary>
+        /// <param name="services">The service collection to which the transient services are added.</param>
+        private static void RegisterTransientServices(IServiceCollection services)
+        {
+            foreach (var type in _types)
+            {
+                if (type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    services.AddTransient(type);
+                    Console.WriteLine($"Registered Transient Service: {type.FullName}");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Registers scoped services based on the <see cref="ScopedServiceAttribute"/> and <see cref="ScopedGenericServiceAttribute"/> found in the specified assembly.
+        /// </summary>
+        /// <param name="services">The service collection to which the scoped services are added.</param>
+        private static void RegisterScopedServices(IServiceCollection services)
+        {
+            foreach (var type in _types)
+            {
+                if (type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
+                    var serviceType = attribute.ServiceType ?? type;
+                    services.AddScoped(serviceType, type);
+                    Console.WriteLine($"Registered Scoped Service: {type.FullName}");
+                }
+            }
+
+            foreach (var type in _types)
+            {
+                if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                {
+                    var attribute = type.GetCustomAttribute<ScopedGenericServiceAttribute>();
+                    services.AddScoped(attribute.ServiceType, type);
+                    Console.WriteLine($"Registered Scoped Generic Service: {type.FullName}");
+                }
+            }
         }
 
         #endregion
