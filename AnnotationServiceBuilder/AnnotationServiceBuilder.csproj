@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PackageId>AnnotationServiceBuilder</PackageId> 
-    <Version>1.1.3</Version> 
+    <Version>1.1.4</Version> 
     <Authors>AnnotationServiceBuilder</Authors> 
     <Company>AnnotationServiceBuilder</Company> 
     <Product>AnnotationServiceBuilder</Product> 
@@ -23,13 +23,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Refit" Version="7.1.2" />
     <PackageReference Include="Refit.HttpClientFactory" Version="7.1.2" />
-    <None Include="README.md" Pack="true" PackagePath="" />
     
-    <!-- Ensure the icon file is included in the package -->
-    <None Update="icon.png">
-      <Pack>True</Pack>
-      <PackagePath>icon.png</PackagePath>
-    </None>
+    <None Include="README.md" Pack="true" PackagePath="" />  
+    <None Include="icon.png" Pack="true" PackagePath=""/> 
+
   </ItemGroup>
 
 </Project>
