@@ -2,6 +2,44 @@
 
 **AnnotationServiceBuilder** is an ASP.NET Core library that simplifies dependency injection by using custom annotations to automatically register services in the DI container.
 
+## Table of Contents
+
+- [AnnotationServiceBuilder](#annotationservicebuilder)
+- [Prerequisites](#prerequisites)
+  - [Web Application](#web-application)
+  - [Important Note](#important-note)
+- [Setting up Annotations](#setting-up-annotations)
+- [Installing AnnotationServiceBuilder](#installing-annotationservicebuilder)
+  - [Step 1: Install the AnnotationServiceBuilder NuGet Package](#step-1-install-the-annotationservicebuilder-nuget-package)
+    - [Using Package Manager Console](#using-package-manager-console)
+    - [Using .NET Core CLI](#using-net-core-cli)
+  - [Step 2: Set Up Annotations](#step-2-set-up-annotations)
+    - [If You're Using before Version 1.0.9](#if-youre-using-before-version-109)
+    - [If You're Using Version 1.0.9](#if-youre-using-version-109)
+    - [If You're Using Version 1.1.1 or Later](#if-youre-using-version-111-or-later)
+- [Usage](#usage)
+  - [1. Using Scoped Services](#1-using-scoped-services)
+  - [2. Using Singleton Services](#2-using-singleton-services)
+  - [3. Using Transient Services](#3-using-transient-services)
+  - [4. Example of a Refit Client](#4-example-of-a-refit-client)
+  - [5. Example with Different `baseUrl` for Multiple Refit Clients](#5-example-with-different-baseurl-for-multiple-refit-clients)
+- [Trimming Safety Considerations](#trimming-safety-considerations)
+  - [If You're Using Version 1.1.1 or Later with Trimming Safety](#if-youre-using-version-111-or-later-with-trimming-safety)
+  - [Example of Using `DynamicDependency`](#example-of-using-dynamicdependency)
+  - [Example of Using `Preserve`](#example-of-using-preserve)
+- [Benefits of Using AnnotationServiceBuilder](#benefits-of-using-annotationservicebuilder)
+  - [1. Automation of Service Registration](#1-automation-of-service-registration)
+  - [2. Clear and Organized Codebase](#2-clear-and-organized-codebase)
+  - [3. Time Efficiency](#3-time-efficiency)
+  - [4. Ease of Use](#4-ease-of-use)
+  - [5. Caching for Performance](#5-caching-for-performance)
+- [Video Guides](#video-guides)
+- [Additional Resources](#additional-resources)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
 ## Prerequisites
 
 ### Web Application
@@ -219,6 +257,17 @@ public class StockPartsService
     [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(MyDependentService))]
     public StockPartsService()
     {
+       
+
+Here is the continuation of the document:
+
+```markdown
+[SingletonService]
+public class StockPartsService
+{
+    [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(MyDependentService))]
+    public StockPartsService()
+    {
         // Method implementation ensuring MyDependentService is retained
     }
 }
@@ -307,4 +356,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
