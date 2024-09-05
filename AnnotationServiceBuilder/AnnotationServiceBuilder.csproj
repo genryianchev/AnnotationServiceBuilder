@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PackageId>AnnotationServiceBuilder</PackageId> 
-    <Version>1.1.5</Version> 
+    <Version>1.1.6</Version> 
     <Authors>AnnotationServiceBuilder</Authors> 
     <Company>AnnotationServiceBuilder</Company> 
     <Product>AnnotationServiceBuilder</Product> 
@@ -17,6 +17,10 @@
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
     <PackageIcon>icon.png</PackageIcon> <!-- Path to your icon -->
+
+    <!-- Debug settings -->
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -25,7 +29,7 @@
     <PackageReference Include="Refit.HttpClientFactory" Version="7.1.2" />
     
     <None Include="README.md" Pack="true" PackagePath="" />  
-    <None Include="icon.png" Pack="true" PackagePath=""/> 
+    <None Include="icon.png" Pack="true" PackagePath="" /> 
 
   </ItemGroup>
 

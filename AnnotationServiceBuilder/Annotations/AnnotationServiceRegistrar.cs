@@ -1,12 +1,13 @@
 ﻿using AnnotationServiceBuilder.Annotations.Refit;
 using AnnotationServiceBuilder.Annotations.Scoped;
 using AnnotationServiceBuilder.Annotations.Singleton;
-using AnnotationServiceBuilder.Data.Transient_Services;
+using AnnotationServiceBuilder.Annotations.Systems.Utilities;
+using AnnotationServiceBuilder.Annotations.Transient;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using System;
-using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 
 namespace AnnotationServiceBuilder.Annotations
@@ -17,26 +18,13 @@ namespace AnnotationServiceBuilder.Annotations
     /// </summary>
     public static class AnnotationServiceRegistrar
     {
-        private static readonly ConcurrentDictionary<Assembly, Type[]> _assemblyTypeCache = new ConcurrentDictionary<Assembly, Type[]>();
-        private static Type[] _types;
-
         /// <summary>
         /// Initializes the static class by caching the types from the provided assembly.
         /// </summary>
         /// <param name="assembly">The assembly to scan for services.</param>
         public static void Initialize(Assembly assembly)
         {
-            _types = GetTypesFromAssembly(assembly);
-        }
-
-        /// <summary>
-        /// Retrieves all types from the specified assembly, using a cache to avoid repeated reflection calls.
-        /// </summary>
-        /// <param name="assembly">The assembly to scan for types.</param>
-        /// <returns>An array of types in the assembly.</returns>
-        private static Type[] GetTypesFromAssembly(Assembly assembly)
-        {
-            return _assemblyTypeCache.GetOrAdd(assembly, asm => asm.GetTypes());
+            TypeListCache.Initialize(assembly);
         }
 
         #region Service Registration Methods
@@ -161,19 +149,21 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="defaultBaseUrl">The default base URL to use if none is specified in the attribute.</param>
         private static void RegisterRefitClients(IServiceCollection services, string defaultBaseUrl)
         {
-            foreach (var type in _types)
-            {
-                if (type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
-                {
-                    var attributes = type.GetCustomAttributes<RefitClientAttribute>();
-                    foreach (var attribute in attributes)
-                    {
-                        var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
-                        var refitClientBuilder = services.AddRefitClient(type)
-                                                         .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
+            var types = TypeListCache.GetTypes();
+            var refitClientTypes = types
+                .Where(type => type.IsInterface && type.GetCustomAttribute<RefitClientAttribute>() != null)
+                .ToList();
 
-                        Console.WriteLine($"Registered Refit Client: {type.FullName} with BaseUrl: {baseUrl}");
-                    }
+            foreach (var type in refitClientTypes)
+            {
+                var attributes = type.GetCustomAttributes<RefitClientAttribute>();
+                foreach (var attribute in attributes)
+                {
+                    var baseUrl = new Uri(attribute.BaseUrl ?? defaultBaseUrl);
+                    var refitClientBuilder = services.AddRefitClient(type)
+                                                     .ConfigureHttpClient(client => client.BaseAddress = baseUrl);
+
+                    Console.WriteLine($"Registered Refit Client: {type.FullName} with BaseUrl: {baseUrl}");
                 }
             }
         }
@@ -184,13 +174,15 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="services">The service collection to which the singleton services are added.</param>
         private static void RegisterSingletonServices(IServiceCollection services)
         {
-            foreach (var type in _types)
+            var types = TypeListCache.GetTypes();
+            var singletonTypes = types
+                .Where(type => type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                .ToList();
+
+            foreach (var type in singletonTypes)
             {
-                if (type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    services.AddSingleton(type);
-                    Console.WriteLine($"Registered Singleton Service: {type.FullName}");
-                }
+                services.AddSingleton(type);
+                Console.WriteLine($"Registered Singleton Service: {type.FullName}");
             }
         }
 
@@ -200,13 +192,15 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="services">The service collection to which the transient services are added.</param>
         private static void RegisterTransientServices(IServiceCollection services)
         {
-            foreach (var type in _types)
+            var types = TypeListCache.GetTypes();
+            var transientTypes = types
+                .Where(type => type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                .ToList();
+
+            foreach (var type in transientTypes)
             {
-                if (type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    services.AddTransient(type);
-                    Console.WriteLine($"Registered Transient Service: {type.FullName}");
-                }
+                services.AddTransient(type);
+                Console.WriteLine($"Registered Transient Service: {type.FullName}");
             }
         }
 
@@ -216,18 +210,20 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="services">The service collection to which the scoped services are added.</param>
         private static void RegisterScopedServices(IServiceCollection services)
         {
-            foreach (var type in _types)
+            var types = TypeListCache.GetTypes();
+            var scopedTypes = types
+                .Where(type => type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                .ToList();
+
+            foreach (var type in scopedTypes)
             {
-                if (type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
-                {
-                    var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
-                    var serviceType = attribute.ServiceType ?? type;
-                    services.AddScoped(serviceType, type);
-                    Console.WriteLine($"Registered Scoped Service: {type.FullName}");
-                }
+                var attribute = type.GetCustomAttribute<ScopedServiceAttribute>();
+                var serviceType = attribute.ServiceType ?? type;
+                services.AddScoped(serviceType, type);
+                Console.WriteLine($"Registered Scoped Service: {type.FullName}");
             }
 
-            foreach (var type in _types)
+            foreach (var type in types)
             {
                 if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
                 {
@@ -239,5 +235,6 @@ namespace AnnotationServiceBuilder.Annotations
         }
 
         #endregion
+
     }
 }

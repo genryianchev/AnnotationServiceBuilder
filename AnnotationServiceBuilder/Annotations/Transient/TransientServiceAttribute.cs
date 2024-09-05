@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AnnotationServiceBuilder.Data.Transient_Services
+namespace AnnotationServiceBuilder.Annotations.Transient
 {
     /// <summary>
     /// Specifies that a class should be registered with a transient lifetime in the dependency injection container.

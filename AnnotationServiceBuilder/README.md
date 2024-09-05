@@ -187,6 +187,63 @@ namespace AnnotationServiceBuilder.Network.Repositories
 }
 ```
 
+### **6. Using Factory Pattern**
+
+**PostFactory.cs:**
+```csharp
+using AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory;
+using AnnotationServiceBuilderExamples.Data.Models;
+
+namespace AnnotationServiceBuilderExamples.Data
+{
+    [FactoryPattern(typeof(IFactory<Post>))]
+    public class PostFactory : IFactory<Post>
+    {
+        public Post Create()
+        {
+            return new Post();
+        }
+    }
+}
+```
+
+**PostFactoryService.cs:**
+```csharp
+using AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory;
+using AnnotationServiceBuilder.Annotations.Transient;
+using AnnotationServiceBuilderExamples.Data.Models;
+
+namespace AnnotationServiceBuilderExamples.Data
+{
+    [TransientService]
+    public class PostFactoryService
+    {
+        private readonly IFactory<Post> _postFactory;
+
+        public PostFactoryService(IFactory<Post> postFactory)
+        {
+            _postFactory = postFactory;
+        }
+
+        public Post CreateNewPost(int id, string title, string body)
+        {
+            var post = _postFactory.Create();
+            post.Id = id;
+            post.Title = title;
+            post.Body = body;
+            return post;
+        }
+    }
+}
+```
+
+### **7. Registering Factory Pattern Services**
+
+```csharp
+// Register factory pattern
+AnnotationPatternRegistrar.AddFactoryPatternServices(builder.Services);
+```
+
 ## Trimming Safety Considerations
 
 When using advanced features like trimming or Ahead-of-Time (AOT) compilation, certain considerations must be made. Assembly scanning, as used in AnnotationServiceBuilder, can prevent trimming from working effectively. This is because concrete implementations that are not directly referenced in code (common with interfaces) might be trimmed out. Enabling the trimming analyzer will provide warnings that this approach may break trimming or AOT.
@@ -268,7 +325,9 @@ Registered classes and interfaces are cached to improve performance and reduce t
 
 For video guides on how to use AnnotationServiceBuilder, you can watch these YouTube videos:
 - [AnnotationServiceBuilder Guide 1](https://www.youtube.com/watch?v=kofPf606OBE)
-- [AnnotationServiceBuilder Guide 2](https://www.youtube.com/watch?v=tspUekM_UHg&t=3s)
+- [AnnotationService
+
+Builder Guide 2](https://www.youtube.com/watch?v=tspUekM_UHg&t=3s)
 
 ## Additional Resources
 
@@ -307,4 +366,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-
