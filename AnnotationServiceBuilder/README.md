@@ -325,9 +325,7 @@ Registered classes and interfaces are cached to improve performance and reduce t
 
 For video guides on how to use AnnotationServiceBuilder, you can watch these YouTube videos:
 - [AnnotationServiceBuilder Guide 1](https://www.youtube.com/watch?v=kofPf606OBE)
-- [AnnotationService
-
-Builder Guide 2](https://www.youtube.com/watch?v=tspUekM_UHg&t=3s)
+- [AnnotationServiceBuilder Guide 2](https://www.youtube.com/watch?v=tspUekM_UHg&t=3s)
 
 ## Additional Resources
 
