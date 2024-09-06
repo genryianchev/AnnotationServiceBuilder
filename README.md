@@ -1,6 +1,33 @@
 # ![AnnotationServiceBuilder Icon](https://github.com/genryianchev/AnnotationServiceBuilder/raw/main/AnnotationServiceBuilder/icon.png) AnnotationServiceBuilder
 
-**AnnotationServiceBuilder** is an ASP.NET Core library that simplifies dependency injection by using custom annotations to automatically register services in the DI container.
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+   - [Web Application](#web-application)
+   - [Important Note](#important-note)
+2. [Setting up Annotations](#setting-up-annotations)
+3. [Installing AnnotationServiceBuilder](#installing-annotationservicebuilder)
+   - [Step 1: Install the AnnotationServiceBuilder NuGet Package](#step-1-install-the-annotationservicebuilder-nuget-package)
+     - [Using Package Manager Console](#using-package-manager-console)
+     - [Using .NET Core CLI](#using-net-core-cli)
+   - [Step 2: Set Up Annotations](#step-2-set-up-annotations)
+     - [If You're Using before Version 1.0.9](#if-youre-using-before-version-109)
+     - [If You're Using Version 1.0.9](#if-youre-using-version-109)
+     - [If You're Using Version 1.1.1 or Later](#if-youre-using-version-111-or-later)
+4. [Usage](#usage)
+   - [Using Scoped Services](#using-scoped-services)
+   - [Using Singleton Services](#using-singleton-services)
+   - [Using Transient Services](#using-transient-services)
+   - [Example of a Refit Client](#example-of-a-refit-client)
+   - [Example with Different `baseUrl` for Multiple Refit Clients](#example-with-different-baseurl-for-multiple-refit-clients)
+   - [Using Factory Pattern](#using-factory-pattern)
+5. [Trimming Safety Considerations](#trimming-safety-considerations)
+6. [ASB: Observing the Logic of Pattern Standards](#asb-observing-the-logic-of-pattern-standards)
+   - [Registering Factory Pattern Services](#registering-factory-pattern-services)
+   - [Example Using Factory Pattern](#example-using-factory-pattern)
+7. [Benefits of Using AnnotationServiceBuilder](#benefits-of-using-annotationservicebuilder)
+
+---
 
 ## Prerequisites
 
@@ -15,7 +42,9 @@ Ensure that your .NET SDK is up-to-date. This project requires .NET 6.0 or later
 
 ## Setting up Annotations
 
-The `Annotations` folder in your project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used:
+The `Annotations` folder in your project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used.
+
+---
 
 ## Installing AnnotationServiceBuilder
 
@@ -99,7 +128,7 @@ AnnotationServiceRegistrar.AddRefitClients(services, "https://api.yourservice.co
 
 Here are examples of how to use each annotation in your project:
 
-### **1. Using Scoped Services**
+### 1.Using Scoped Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Scoped;
@@ -111,7 +140,7 @@ public class MyScopedService : IMyScopedService
 }
 ```
 
-### **2. Using Singleton Services**
+### 2.Using Singleton Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Singleton;
@@ -123,7 +152,7 @@ public class MySingletonService
 }
 ```
 
-### **3. Using Transient Services**
+### 3.Using Transient Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Transient_Services;
@@ -135,7 +164,7 @@ public class MyTransientService
 }
 ```
 
-### **4. Example of a Refit Client**
+### 4.Example of a Refit Client
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Refit;
@@ -156,7 +185,7 @@ namespace AnnotationServiceBuilder.Network.Repositories
 }
 ```
 
-### **5. Example with Different `baseUrl` for Multiple Refit Clients**
+### 5.Example with Different `baseUrl` for Multiple Refit Clients
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Refit;
@@ -187,85 +216,15 @@ namespace AnnotationServiceBuilder.Network.Repositories
 }
 ```
 
-### **6. Using Factory Pattern**
-
-**PostFactory.cs:**
-```csharp
-using AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory;
-using AnnotationServiceBuilderExamples.Data.Models;
-
-namespace AnnotationServiceBuilderExamples.Data
-{
-    [FactoryPattern(typeof(IFactory<Post>))]
-    public class PostFactory : IFactory<Post>
-    {
-        public Post Create()
-        {
-            return new Post();
-        }
-    }
-}
-```
-
-**PostFactoryService.cs:**
-```csharp
-using AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory;
-using AnnotationServiceBuilder.Annotations.Transient;
-using AnnotationServiceBuilderExamples.Data.Models;
-
-namespace AnnotationServiceBuilderExamples.Data
-{
-    [TransientService]
-    public class PostFactoryService
-    {
-        private readonly IFactory<Post> _postFactory;
-
-        public PostFactoryService(IFactory<Post> postFactory)
-        {
-            _postFactory = postFactory;
-        }
-
-        public Post CreateNewPost(int id, string title, string body)
-        {
-            var post = _postFactory.Create();
-            post.Id = id;
-            post.Title = title;
-            post.Body = body;
-            return post;
-        }
-    }
-}
-```
-
-### **7. Registering Factory Pattern Services**
-
-```csharp
-// Register factory pattern
-AnnotationPatternRegistrar.AddFactoryPatternServices(builder.Services);
-```
-
 ## Trimming Safety Considerations
 
-When using advanced features like trimming or Ahead-of-Time (AOT) compilation, certain considerations must be made. Assembly scanning, as used in AnnotationServiceBuilder, can prevent trimming from working effectively. This is because concrete implementations that are not directly referenced in code (common with interfaces) might be trimmed out. Enabling the trimming analyzer will provide warnings that this approach may break trimming or AOT.
+When using advanced features like trimming or Ahead-of-Time (AOT) compilation, assembly scanning can cause issues by trimming out concrete implementations not directly referenced in the code. **AnnotationServiceBuilder** addresses these challenges by ensuring compatibility with AOT and trimming, while providing warnings via trimming analyzers to help prevent potential issues. You can also use attributes like `DynamicDependency` or `Preserve` to retain necessary types during the trimming process.
 
-To mitigate this, you can use attributes like `DynamicDependency` or `Preserve` to ensure specific types or members are retained during the trimming process.
+### Manual Trimming Considerations
 
-### If You're Using Version 1.1.1 or Later with Trimming Safety
+If this approach doesn't help, you may try to manually apply trimming safety considerations.
 
-Instead of creating an instance of `AnnotationServiceRegistrar`, use the static method `Initialize` to set up the types and then call the trimming safety registration methods:
-
-```csharp
-AnnotationServiceRegistrar.Initialize(Assembly.GetExecutingAssembly());
-
-AnnotationServiceRegistrar.AddSingletonServicesWithTrimmingSafety(services);
-AnnotationServiceRegistrar.AddScopedServicesWithTrimmingSafety(services);
-AnnotationServiceRegistrar.AddTransientServicesWithTrimmingSafety(services);
-AnnotationServiceRegistrar.AddRefitClientsWithTrimmingSafety(services, "https://api.yourservice.com"); // Replace with your API base URL
-```
-
-If this approach doesn't help, you may try to manually apply trimming safety considerations:
-
-### Example of Using `DynamicDependency`
+#### Example of Using `DynamicDependency`
 
 ```csharp
 using System.Diagnostics.CodeAnalysis;
@@ -297,29 +256,98 @@ public class MyDependentService
 }
 ```
 
-The `Preserve` attribute can be used to mark entire classes or methods to be preserved during trimming. This ensures that your critical code isn't removed during the optimization processes like AOT.
+## ASB: Observing the Logic of Pattern Standards
+
+**AnnotationServiceBuilder** supports design patterns like the Factory Pattern, to improve code maintainability and structure. Below is an example of how patterns are implemented using ASB’s annotations.
+
+### Registering Factory Pattern Services
+
+Before
+
+ registering, initialize the pattern registrar:
+
+```csharp
+AnnotationPatternRegistrar.Initialize(Assembly.GetExecutingAssembly());
+AnnotationPatternRegistrar.AddFactoryPatternServices(builder.Services);
+```
+
+> **Note**: If you use `AnnotationServiceRegistrar.Initialize(Assembly.GetExecutingAssembly())`, **do not** use `AnnotationPatternRegistrar.Initialize(Assembly.GetExecutingAssembly())`.
+
+### Example Using Factory Pattern
+
+**PostFactory.cs:**
+
+```csharp
+using AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory;
+using AnnotationServiceBuilderExamples.Data.Models;
+
+namespace AnnotationServiceBuilderExamples.Data
+{
+    [FactoryPattern(typeof(IFactory<Post>))]
+    public class PostFactory : IFactory<Post>
+    {
+        public Post Create()
+        {
+            return new Post();
+        }
+    }
+}
+```
+
+**PostFactoryService.cs:**
+
+```csharp
+using AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory;
+using AnnotationServiceBuilder.Annotations.Transient;
+using AnnotationServiceBuilderExamples.Data.Models;
+
+namespace AnnotationServiceBuilderExamples.Data
+{
+    [TransientService]
+    public class PostFactoryService
+    {
+        private readonly IFactory<Post> _postFactory;
+
+        public PostFactoryService(IFactory<Post> postFactory)
+        {
+            _postFactory = postFactory;
+        }
+
+        public Post CreateNewPost(int id, string title, string body)
+        {
+            var post = _postFactory.Create();
+            post.Id = id;
+            post.Title = title;
+            post.Body = body;
+            return post;
+        }
+    }
+}
+```
 
 ## Benefits of Using AnnotationServiceBuilder
 
-### 1. **Automation of Service Registration**
+### 1. Automation of Service Registration
 
 Automatically register your services in the DI container without needing to manually add each service in `Startup.cs` or `Program.cs`. This reduces boilerplate code and makes your setup process much more streamlined.
 
-### 2. **Clear and Organized Codebase**
+### 2. Clear and Organized Codebase
 
 Annotations define the lifetime of services (Singleton, Scoped, Transient), making your code more organized and easier to maintain.
 
-### 3. **Time Efficiency**
+### 3. Time Efficiency
 
 Automating service registration saves time, especially in large projects. Developers can focus on building features instead of managing service registrations manually.
 
-### 4. **Ease of Use**
+### 4. Ease of Use
 
 The library provides a simple, intuitive API for registering services and Refit clients, making the process user-friendly.
 
-### 5. **Caching for Performance**
+### 5. Caching for Performance
 
 Registered classes and interfaces are cached to improve performance and reduce the overhead of repeated reflection operations.
+
+---
 
 ## Video Guides
 
@@ -327,19 +355,25 @@ For video guides on how to use AnnotationServiceBuilder, you can watch these You
 - [AnnotationServiceBuilder Guide 1](https://www.youtube.com/watch?v=kofPf606OBE)
 - [AnnotationServiceBuilder Guide 2](https://www.youtube.com/watch?v=tspUekM_UHg&t=3s)
 
+---
+
 ## Additional Resources
 
 - [AnnotationServiceBuilder Examples](https://github.com/genryianchev/AnnotationServiceBuilderExamples)
+
+---
 
 ## Contributing
 
 We welcome contributions! Please submit a pull request or open an issue to discuss your ideas or report bugs.
 
+---
+
 ## License
 
-This project is licensed under the MIT License. 
+This project is licensed under the MIT License.
 
-```
+```text
 MIT License
 
 Copyright (c) 2024 Gennadii Ianchev
@@ -356,11 +390,10 @@ copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR
-
- PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
