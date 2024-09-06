@@ -1,4 +1,6 @@
+
 # ![AnnotationServiceBuilder Icon](https://github.com/genryianchev/AnnotationServiceBuilder/raw/main/AnnotationServiceBuilder/icon.png) AnnotationServiceBuilder
+Annotation Service Builder is an ASP.NET library that simplifies dependency injection by using custom annotations to automatically register services in the DI container.
 
 ## Table of Contents
 
@@ -41,7 +43,7 @@ Ensure that your .NET SDK is up-to-date. This project requires .NET 6.0 or later
 
 ## Setting up Annotations
 
-The `Annotations` folder in your project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used.
+The `Annotations` folder in project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used.
 
 ---
 

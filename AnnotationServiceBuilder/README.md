@@ -1,4 +1,35 @@
+
 # AnnotationServiceBuilder
+Annotation Service Builder is an ASP.NET library that simplifies dependency injection by using custom annotations to automatically register services in the DI container.
+
+## Table of Contents
+
+1. [Prerequisites](#prerequisites)
+   - [Web Application](#web-application)
+   - [Important Note](#important-note)
+2. [Setting up Annotations](#setting-up-annotations)
+3. [Installing AnnotationServiceBuilder](#installing-annotationservicebuilder)
+   - [Step 1: Install the AnnotationServiceBuilder NuGet Package](#step-1-install-the-annotationservicebuilder-nuget-package)
+     - [Using Package Manager Console](#using-package-manager-console)
+     - [Using .NET Core CLI](#using-net-core-cli)
+   - [Step 2: Set Up Annotations](#step-2-set-up-annotations)
+     - [If You're Using before Version 1.0.9](#if-youre-using-before-version-109)
+     - [If You're Using Version 1.0.9](#if-youre-using-version-109)
+     - [If You're Using Version 1.1.1 or Later](#if-youre-using-version-111-or-later)
+4. [Usage](#usage)
+   - [1. Using Scoped Services](#1-using-scoped-services)
+   - [2. Using Singleton Services](#2-using-singleton-services)
+   - [3. Using Transient Services](#3-using-transient-services)
+   - [4. Example of a Refit Client](#4-example-of-a-refit-client)
+   - [5. Example with Different `baseUrl` for Multiple Refit Clients](#5-example-with-different-baseurl-for-multiple-refit-clients)
+5. [Trimming Safety Considerations](#trimming-safety-considerations)
+6. [ASB: Observing the Logic of Pattern Standards](#asb-observing-the-logic-of-pattern-standards)
+   - [Registering Factory Pattern Services](#registering-factory-pattern-services)
+   - [Example Using Factory Pattern](#example-using-factory-pattern)
+7. [Benefits of Using AnnotationServiceBuilder](#benefits-of-using-annotationservicebuilder)
+
+---
+
 ## Prerequisites
 
 ### Web Application
@@ -12,7 +43,7 @@ Ensure that your .NET SDK is up-to-date. This project requires .NET 6.0 or later
 
 ## Setting up Annotations
 
-The `Annotations` folder in your project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used.
+The `Annotations` folder in project contains the key attributes used for automatically registering services in the DI container. Below are the files and their purposes, along with examples of how they are used.
 
 ---
 
@@ -376,3 +407,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
