@@ -94,11 +94,13 @@ var customHandler = new MyCustomHandler();
 AnnotationServiceRegistrar.AddRefitClients(services, "https://api.yourservice.com", customHandler);
 ```
 
+---
+
 ## Usage
 
 Here are examples of how to use each annotation in your project:
 
-### 1.Using Scoped Services
+### 1. Using Scoped Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Scoped;
@@ -110,7 +112,7 @@ public class MyScopedService : IMyScopedService
 }
 ```
 
-### 2.Using Singleton Services
+### 2. Using Singleton Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Singleton;
@@ -122,7 +124,7 @@ public class MySingletonService
 }
 ```
 
-### 3.Using Transient Services
+### 3. Using Transient Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Transient_Services;
@@ -134,7 +136,7 @@ public class MyTransientService
 }
 ```
 
-### 4.Example of a Refit Client
+### 4. Example of a Refit Client
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Refit;
@@ -155,7 +157,7 @@ namespace AnnotationServiceBuilder.Network.Repositories
 }
 ```
 
-### 5.Example with Different `baseUrl` for Multiple Refit Clients
+### 5. Example with Different `baseUrl` for Multiple Refit Clients
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Refit;
@@ -185,6 +187,10 @@ namespace AnnotationServiceBuilder.Network.Repositories
     }
 }
 ```
+
+
+
+---
 
 ## Trimming Safety Considerations
 
@@ -217,7 +223,9 @@ using System.Runtime.CompilerServices;
 
 [Preserve]
 [SingletonService]
-public class MyDependentService
+public class My
+
+DependentService
 {
     public void PerformOperation()
     {
@@ -226,15 +234,15 @@ public class MyDependentService
 }
 ```
 
+---
+
 ## ASB: Observing the Logic of Pattern Standards
 
 **AnnotationServiceBuilder** supports design patterns like the Factory Pattern, to improve code maintainability and structure. Below is an example of how patterns are implemented using ASB’s annotations.
 
 ### Registering Factory Pattern Services
 
-Before
-
- registering, initialize the pattern registrar:
+Before registering, initialize the pattern registrar:
 
 ```csharp
 AnnotationPatternRegistrar.Initialize(Assembly.GetExecutingAssembly());
@@ -289,11 +297,13 @@ namespace AnnotationServiceBuilderExamples.Data
             post.Id = id;
             post.Title = title;
             post.Body = body;
-            return post;
+            return post.
         }
     }
 }
 ```
+
+---
 
 ## Benefits of Using AnnotationServiceBuilder
 
@@ -366,4 +376,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
-

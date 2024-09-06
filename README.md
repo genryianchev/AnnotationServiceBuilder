@@ -15,12 +15,11 @@
      - [If You're Using Version 1.0.9](#if-youre-using-version-109)
      - [If You're Using Version 1.1.1 or Later](#if-youre-using-version-111-or-later)
 4. [Usage](#usage)
-   - [Using Scoped Services](#using-scoped-services)
-   - [Using Singleton Services](#using-singleton-services)
-   - [Using Transient Services](#using-transient-services)
-   - [Example of a Refit Client](#example-of-a-refit-client)
-   - [Example with Different `baseUrl` for Multiple Refit Clients](#example-with-different-baseurl-for-multiple-refit-clients)
-   - [Using Factory Pattern](#using-factory-pattern)
+   - [1. Using Scoped Services](#1-using-scoped-services)
+   - [2. Using Singleton Services](#2-using-singleton-services)
+   - [3. Using Transient Services](#3-using-transient-services)
+   - [4. Example of a Refit Client](#4-example-of-a-refit-client)
+   - [5. Example with Different `baseUrl` for Multiple Refit Clients](#5-example-with-different-baseurl-for-multiple-refit-clients)
 5. [Trimming Safety Considerations](#trimming-safety-considerations)
 6. [ASB: Observing the Logic of Pattern Standards](#asb-observing-the-logic-of-pattern-standards)
    - [Registering Factory Pattern Services](#registering-factory-pattern-services)
@@ -124,11 +123,13 @@ var customHandler = new MyCustomHandler();
 AnnotationServiceRegistrar.AddRefitClients(services, "https://api.yourservice.com", customHandler);
 ```
 
+---
+
 ## Usage
 
 Here are examples of how to use each annotation in your project:
 
-### 1.Using Scoped Services
+### 1. Using Scoped Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Scoped;
@@ -140,7 +141,7 @@ public class MyScopedService : IMyScopedService
 }
 ```
 
-### 2.Using Singleton Services
+### 2. Using Singleton Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Singleton;
@@ -152,7 +153,7 @@ public class MySingletonService
 }
 ```
 
-### 3.Using Transient Services
+### 3. Using Transient Services
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Transient_Services;
@@ -164,7 +165,7 @@ public class MyTransientService
 }
 ```
 
-### 4.Example of a Refit Client
+### 4. Example of a Refit Client
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Refit;
@@ -185,7 +186,7 @@ namespace AnnotationServiceBuilder.Network.Repositories
 }
 ```
 
-### 5.Example with Different `baseUrl` for Multiple Refit Clients
+### 5. Example with Different `baseUrl` for Multiple Refit Clients
 
 ```csharp
 using AnnotationServiceBuilder.Annotations.Refit;
@@ -215,6 +216,10 @@ namespace AnnotationServiceBuilder.Network.Repositories
     }
 }
 ```
+
+
+
+---
 
 ## Trimming Safety Considerations
 
@@ -247,7 +252,9 @@ using System.Runtime.CompilerServices;
 
 [Preserve]
 [SingletonService]
-public class MyDependentService
+public class My
+
+DependentService
 {
     public void PerformOperation()
     {
@@ -256,15 +263,15 @@ public class MyDependentService
 }
 ```
 
+---
+
 ## ASB: Observing the Logic of Pattern Standards
 
 **AnnotationServiceBuilder** supports design patterns like the Factory Pattern, to improve code maintainability and structure. Below is an example of how patterns are implemented using ASB’s annotations.
 
 ### Registering Factory Pattern Services
 
-Before
-
- registering, initialize the pattern registrar:
+Before registering, initialize the pattern registrar:
 
 ```csharp
 AnnotationPatternRegistrar.Initialize(Assembly.GetExecutingAssembly());
@@ -319,11 +326,13 @@ namespace AnnotationServiceBuilderExamples.Data
             post.Id = id;
             post.Title = title;
             post.Body = body;
-            return post;
+            return post.
         }
     }
 }
 ```
+
+---
 
 ## Benefits of Using AnnotationServiceBuilder
 
