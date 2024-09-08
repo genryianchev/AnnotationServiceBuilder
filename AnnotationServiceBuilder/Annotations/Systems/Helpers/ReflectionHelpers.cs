@@ -4,6 +4,12 @@ using System.Linq;
 
 namespace AnnotationServiceBuilder.Annotations.Systems.Helpers
 {
+    /// <summary>
+    /// Provides methods to register factory services in the DI container following the Factory Pattern.
+    /// This class will be removed in future versions and moved to another library (AnnotationServiceBuilder.Patterns).
+    /// Please update your code accordingly.
+    /// </summary>
+    [Obsolete("This class will be removed in future versions and moved to another library (AnnotationServiceBuilder.Patterns). Please update your code accordingly.", false)]
     public static class ReflectionHelpers
     {
         /// <summary>

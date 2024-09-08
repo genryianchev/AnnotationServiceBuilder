@@ -7,6 +7,7 @@ namespace AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns
     /// Attribute used to mark a class as a factory that follows the Factory Pattern.
     /// The class should be registered in the dependency injection container with a specific lifetime.
     /// </summary>
+    [Obsolete("This class will be removed in future versions and moved to another library (AnnotationServiceBuilder.Patterns). Please update your code accordingly.", false)]
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     public class FactoryPatternAttribute : Attribute
     {

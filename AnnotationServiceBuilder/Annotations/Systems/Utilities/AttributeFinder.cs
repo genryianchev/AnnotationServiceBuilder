@@ -1,49 +1,51 @@
-﻿using System;
+﻿using AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory;
+using AnnotationServiceBuilder.Annotations.Refit;
+using AnnotationServiceBuilder.Annotations.Scoped;
+using AnnotationServiceBuilder.Annotations.Singleton;
+using AnnotationServiceBuilder.Annotations.Transient;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace AnnotationServiceBuilder.Annotations.Systems.Utilities
 {
     public static class AttributeFinder
     {
         /// <summary>
-        /// Retrieves all attributes defined in the specified assembly.
+        /// A predefined set of attribute types that are used for filtering types within assemblies.
+        /// These attributes are commonly used to mark services or components for Dependency Injection (DI) 
+        /// or other pattern-related functionalities.
         /// </summary>
-        /// <param name="assembly">The assembly to search for attributes.</param>
-        /// <returns>A list of attribute types found in the assembly.</returns>
-        public static List<Type> GetAttributesFromAssembly(Assembly assembly)
+        public static readonly HashSet<Type> attributeTypes = new HashSet<Type>
         {
-            return assembly.GetTypes()
-                .Where(type => type.IsSubclassOf(typeof(Attribute)) && !type.IsAbstract)
-                .ToList();
-        }
+            /// <summary>
+            /// Attribute to mark generic services for scoped lifetime registration.
+            /// </summary>
+            typeof(ScopedGenericServiceAttribute),
 
-        /// <summary>
-        /// Retrieves all attributes defined in the specified assembly and within the specified namespace.
-        /// </summary>
-        /// <param name="assembly">The assembly to search for attributes.</param>
-        /// <param name="namespacePrefix">The namespace prefix to filter by (e.g., "AnnotationServiceBuilder").</param>
-        /// <returns>A list of attribute types found in the specified namespace.</returns>
-        public static HashSet<Type> GetAttributesFromAssembly(Assembly assembly, string namespacePrefix)
-        {
-            var types = assembly.GetTypes();
+            /// <summary>
+            /// Attribute to mark services for singleton lifetime registration.
+            /// </summary>
+            typeof(SingletonServiceAttribute),
 
-            var attributeTypes = new HashSet<Type>();
+            /// <summary>
+            /// Attribute to mark services for scoped lifetime registration.
+            /// </summary>
+            typeof(ScopedServiceAttribute),
 
-            foreach (var type in types)
-            {
-                if (type.IsSubclassOf(typeof(Attribute)) &&
-                    !type.IsAbstract &&
-                    type.Namespace != null &&
-                    type.Namespace.StartsWith(namespacePrefix))
-                {
-                    attributeTypes.Add(type);
-                }
-            }
+            /// <summary>
+            /// Attribute to define Refit clients for API communication.
+            /// </summary>
+            typeof(RefitClientAttribute),
 
-            return attributeTypes;
-        }
+            /// <summary>
+            /// Attribute to mark services for transient lifetime registration.
+            /// </summary>
+            typeof(TransientServiceAttribute),
 
+            /// <summary>
+            /// Attribute used to implement the Factory design pattern in DI containers.
+            /// </summary>
+            typeof(FactoryPatternAttribute)
+        };
     }
 }

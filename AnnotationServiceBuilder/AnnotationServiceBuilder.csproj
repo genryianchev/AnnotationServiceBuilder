@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <PackageId>AnnotationServiceBuilder</PackageId> 
-    <Version>1.1.6</Version> 
+    <Version>1.1.7</Version> 
     <Authors>AnnotationServiceBuilder</Authors> 
     <Company>AnnotationServiceBuilder</Company> 
     <Product>AnnotationServiceBuilder</Product> 
@@ -21,16 +21,24 @@
     <!-- Debug settings -->
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
+
+    <!-- Symbol and source inclusion settings 
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    -->
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Refit" Version="7.1.2" />
     <PackageReference Include="Refit.HttpClientFactory" Version="7.1.2" />
-    
-    <None Include="README.md" Pack="true" PackagePath="" />  
-    <None Include="icon.png" Pack="true" PackagePath="" /> 
+  </ItemGroup>
 
+  <!-- Make sure README.md and icon.png are included in the package -->
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath=""/>
+    <None Include="icon.png" Pack="true" PackagePath=""/>
   </ItemGroup>
 
 </Project>

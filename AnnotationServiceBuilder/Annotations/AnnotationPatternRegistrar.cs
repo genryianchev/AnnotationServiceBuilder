@@ -3,13 +3,18 @@ using AnnotationServiceBuilder.Annotations.Systems.Helpers;
 using AnnotationServiceBuilder.Annotations.Systems.Utilities;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
 namespace AnnotationServiceBuilder.Annotations
 {
+    /// <summary>
+    /// Provides methods to register factory services in the DI container following the Factory Pattern.
+    /// This class will be removed in future versions and moved to another library (AnnotationServiceBuilder.Patterns).
+    /// Please update your code accordingly.
+    /// </summary>
+    [Obsolete("This class will be removed in future versions and moved to another library (AnnotationServiceBuilder.Patterns). Please update your code accordingly.", false)]
     public static class AnnotationPatternRegistrar
     {
         /// <summary>
@@ -52,7 +57,6 @@ namespace AnnotationServiceBuilder.Annotations
         /// <param name="lifetime">The default <see cref="ServiceLifetime"/> to use if not specified in the attribute.</param>
         private static void RegisterFactoryServices(IServiceCollection services, ServiceLifetime lifetime = ServiceLifetime.Singleton)
         {
-            var registeredTypes = new HashSet<Type>();
             var types = TypeListCache.GetTypes();
 
             // Retrieve types marked with the FactoryPatternAttribute
@@ -108,6 +112,5 @@ namespace AnnotationServiceBuilder.Annotations
                     throw new InvalidOperationException($"Unsupported service lifetime: {serviceLifetime}");
             }
         }
-
     }
 }

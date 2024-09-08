@@ -1,9 +1,13 @@
-﻿namespace AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory
+﻿using System;
+
+namespace AnnotationServiceBuilder.Annotations.Patterns.CreationalDesignPatterns.Factory
 {
     /// <summary>
     /// Defines a factory interface for creating instances of type <typeparamref name="T"/>.
+    /// This interface will be removed in future versions and moved to another library (AnnotationServiceBuilder.Patterns).
+    /// Please update your code accordingly.
     /// </summary>
-    /// <typeparam name="T">The type of object that the factory creates.</typeparam>
+    [Obsolete("This interface will be removed in future versions and moved to another library (AnnotationServiceBuilder.Patterns). Please update your code accordingly.", false)]
     public interface IFactory<T>
     {
         /// <summary>

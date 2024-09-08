@@ -17,7 +17,7 @@ namespace AnnotationServiceBuilder.Annotations.Systems.Utilities
         /// <param name="assembly">The assembly to scan for types.</param>
         public static void Initialize(Assembly assembly)
         {
-            _types = GetTypesFromAssembly(assembly);
+            _types = GetTypesWithAttributesFromAssembly(assembly);
         }
 
         /// <summary>
@@ -40,8 +40,7 @@ namespace AnnotationServiceBuilder.Annotations.Systems.Utilities
         /// <returns>An array of types that are marked with any of the attributes defined in the assembly.</returns>
         public static Type[] GetTypesWithAttributesFromAssembly(Assembly assembly)
         {
-            var namespacePrefix = "AnnotationServiceBuilder";
-            var attributeTypes = AttributeFinder.GetAttributesFromAssembly(assembly, namespacePrefix);
+            var attributeTypes = AttributeFinder.attributeTypes;
             return GetTypesFromAssembly(assembly, attributeTypes);
         }
 
@@ -58,15 +57,18 @@ namespace AnnotationServiceBuilder.Annotations.Systems.Utilities
             {
                 var types = asm.GetTypes();
 
-                if (attributeTypes != null && attributeTypes.Count > 0)
+                // If the attribute list is empty or null, return all types
+                if (attributeTypes == null || attributeTypes.Count == 0)
                 {
-                    types = types.Where(t => t.GetCustomAttributes(false)
-                        .Any(attr => attributeTypes.Contains(attr.GetType()))).ToArray();
+                    return types;
                 }
+
+                // If the attribute list is not empty, filter only the types that have the required attributes
+                types = types.Where(t => attributeTypes.Any(attrType => t.IsDefined(attrType, false)))
+                             .ToArray();
 
                 return types;
             });
         }
-
     }
 }
