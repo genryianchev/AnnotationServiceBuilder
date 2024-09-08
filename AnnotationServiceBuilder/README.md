@@ -1,5 +1,8 @@
 
-# AnnotationServiceBuilder
+# ![AnnotationServiceBuilder Icon](https://github.com/genryianchev/AnnotationServiceBuilder/raw/main/AnnotationServiceBuilder/icon.png) AnnotationServiceBuilder
+
+Annotation Service Builder is an ASP.NET library that simplifies dependency injection by using custom annotations to automatically register services in the DI container.
+
 ## Prerequisites
 
 ### Web Application
@@ -155,7 +158,16 @@ namespace AnnotationServiceBuilder.Network.Repositories
 
 ## Trimming Safety Considerations
 
-When using advanced features like trimming or Ahead-of-Time (AOT) compilation, assembly scanning can cause issues by trimming out concrete implementations not directly referenced in the code. **AnnotationServiceBuilder** addresses these challenges by ensuring compatibility with AOT and trimming, while providing warnings via trimming analyzers to help prevent potential issues. You can also use attributes like `DynamicDependency` or `Preserve` to retain necessary types during the trimming process.
+To ensure that your services are not trimmed during the optimization process, use the trimming-safe registration methods provided by **AnnotationServiceBuilder**. These methods will guarantee that necessary types are preserved and registered correctly.
+
+```csharp
+AnnotationServiceRegistrar.Initialize(Assembly.GetExecutingAssembly());
+
+AnnotationServiceRegistrar.AddSingletonServicesWithTrimmingSafety(services);
+AnnotationServiceRegistrar.AddScopedServicesWithTrimmingSafety(services);
+AnnotationServiceRegistrar.AddTransientServicesWithTrimmingSafety(services);
+AnnotationServiceRegistrar.AddRefitClientsWithTrimmingSafety(services, "https://api.yourservice.com"); // Replace with your API base URL
+```
 
 ### Manual Trimming Considerations
 
@@ -177,7 +189,7 @@ public class StockPartsService
 }
 ```
 
-### Example of Using `Preserve`
+#### Example of Using `Preserve`
 
 ```csharp
 using System.Runtime.CompilerServices;
