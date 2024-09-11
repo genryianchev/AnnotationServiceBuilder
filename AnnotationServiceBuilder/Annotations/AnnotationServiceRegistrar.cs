@@ -176,7 +176,7 @@ namespace AnnotationServiceBuilder.Annotations
         {
             var types = TypeListCache.GetTypes();
             var singletonTypes = types
-                .Where(type => type.GetCustomAttribute<SingletonServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                .Where(type => type.GetCustomAttribute<SingletonServiceAttribute>() != null)
                 .ToList();
 
             foreach (var type in singletonTypes)
@@ -194,7 +194,7 @@ namespace AnnotationServiceBuilder.Annotations
         {
             var types = TypeListCache.GetTypes();
             var transientTypes = types
-                .Where(type => type.GetCustomAttribute<TransientServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                .Where(type => type.GetCustomAttribute<TransientServiceAttribute>() != null)
                 .ToList();
 
             foreach (var type in transientTypes)
@@ -212,7 +212,7 @@ namespace AnnotationServiceBuilder.Annotations
         {
             var types = TypeListCache.GetTypes();
             var scopedTypes = types
-                .Where(type => type.GetCustomAttribute<ScopedServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                .Where(type => type.GetCustomAttribute<ScopedServiceAttribute>() != null)
                 .ToList();
 
             foreach (var type in scopedTypes)
@@ -225,7 +225,7 @@ namespace AnnotationServiceBuilder.Annotations
 
             foreach (var type in types)
             {
-                if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null && type.IsClass && !type.IsAbstract)
+                if (type.GetCustomAttribute<ScopedGenericServiceAttribute>() != null)
                 {
                     var attribute = type.GetCustomAttribute<ScopedGenericServiceAttribute>();
                     services.AddScoped(attribute.ServiceType, type);

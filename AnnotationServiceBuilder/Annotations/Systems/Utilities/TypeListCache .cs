@@ -55,19 +55,28 @@ namespace AnnotationServiceBuilder.Annotations.Systems.Utilities
         {
             return _assemblyTypeListCache.GetOrAdd(assembly, asm =>
             {
-                var types = asm.GetTypes();
-
-                // If the attribute list is empty or null, return all types
+                // If the attribute list is null or empty, return all types that are non-abstract classes
                 if (attributeTypes == null || attributeTypes.Count == 0)
                 {
-                    return types;
+                    return asm.GetTypes()
+                              .Where(t => !t.IsAbstract && t.IsClass)
+                              .ToArray();
                 }
 
-                // If the attribute list is not empty, filter only the types that have the required attributes
-                types = types.Where(t => attributeTypes.Any(attrType => t.IsDefined(attrType, false)))
-                             .ToArray();
+                // Filter types based on the provided attributes
+                var types = asm.GetTypes()
+                            .Where(t => !t.IsAbstract && t.IsClass && attributeTypes.Any(attrType => t.IsDefined(attrType, false)))
+                            .ToArray();
 
-                return types;
+                // If no types match the attributes, return all non-abstract classes
+                if (types.Length == 0)
+                {
+                    return asm.GetTypes()
+                              .Where(t => !t.IsAbstract && t.IsClass)
+                              .ToArray();
+                }
+
+                return types; // Return the filtered types
             });
         }
     }
